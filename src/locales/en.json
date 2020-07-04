@@ -1,0 +1,78 @@
+{
+  "t_app_name": "OpenBVE MCS",
+  "t_loading": "Loading...",
+  "t_back": "Back",
+
+
+  "t_error_title": "Operation Failed",
+  "e_network": "Failed establishing a connection to the server.<br>Please check your network connection.",
+  "e_201": "The resource requested does not exist.",
+  "e_202": "The Identifier Name is already taken.<br>Please try another one.",
+  "e_203": "The GUID is already taken.<br>Please try another one.",
+  "e_212": "Incorrect username or password.<br>Please try again.",
+  "e_221": "You are not authorized to perform this action.",
+
+  "e_required": "This field is requied.",
+  "e_email_bad": "This Email is not in a valid format.",
+  "e_url_bad": "This URL is not in a valid format.",
+  "e_str_trim": "Space must not be present on either ends.",
+
+
+  "l_frame_login": "Login",
+  "l_frame_logout": "Logout",
+  "l_frame_home": "Home",
+  "l_frame_packages": "Packages",
+  "l_frame_credit": "Credit",
+
+
+  "t_login_title": "Login",
+  "t_login_username": "Username",
+  "t_login_password": "Password",
+  "l_login_btn": "Login",
+  "t_toast_login": "Logged in!",
+  "t_toast_login_resubmit": "Logged in! Please submit your request again.",
+  "t_toast_logout": "Logged out!",
+
+
+  "f_s3_local": "Name (Local Language)",
+  "f_s3_english": "Name (English)",
+  "f_s3_tag": "Name (Complementary)",
+
+  "e_s3_local_req": "Local Language Name is required",
+  "e_s3_english_req": "English Name is requied if local language is not English",
+  "e_s3_english_bad": "English Name must be in English",
+
+
+  "t_category_info": "Basic Info",
+  "t_category_description": "Description",
+  "t_category_file": "Files",
+  "f_pack_tip_manual": "You can refer to this document for explainations on the fields.",
+  "f_pack_tip_optional": "All fields besides the Identifier Name and Package Display Name are optional.",
+  "f_pack_ident": "Unique Identification",
+  "f_pack_name": "Package Display Name",
+  "f_pack_origin": "Original Author Information",
+
+  "f_ident_name": "Identifier Name",
+  "f_ident_guid": "GUID (For OpenBVE Packages)",
+  "t_pack_origin_question": "Is this your original work?",
+  "t_pack_origin_yes": "Yes, it is",
+  "t_pack_origin_no": "No, it is a work of someone else",
+  "t_pack_origin_tip": "The name and contact of the original author must be addressed below.",
+  "f_email": "Email",
+  "f_homepage": "Homepage",
+  "f_pack_homepage_tip": "A web page providing dedicated information of the package.",
+  "f_pack_thumbnail": "Thumbnail Image",
+  "f_pack_thumbnail_tip": "You can use online services to host your image. Take <a href=\"https://imgchr.com\" target=\"_blank\">imgchr.com</a> as an example, copy \"Image URL\" into the first field, and \"Thumbnail URL\" into the second field.",
+  "f_thumbnail_url": "Full Resolution Thumbnail Image URL",
+  "f_thumbnail_lq_url": "Lower Quality Thumbnail Image URL (Optional)",
+
+  "e_pack_name_limit": "Only uppercase & lowercase characters, numbers, space and en dash may be used.",
+  "e_pack_name_multiple_space": "Continous multiple space is not allowed.",
+  "e_pack_guid": "This GUID is not valid.",
+
+  "l_pack_change": "Submit Info",
+  "l_pack_description": "Submit Description",
+  "l_pack_create": "Create Package",
+  "t_toast_saved": "Saved!",
+  "t_toast_created": "Created! You can now edit more information."
+}

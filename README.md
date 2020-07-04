@@ -1,4 +1,4 @@
-# obpkg
+# BCS Frontend
 
 ## Project setup
 ```
