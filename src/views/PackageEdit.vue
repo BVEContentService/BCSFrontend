@@ -2,8 +2,12 @@
   <v-container style="max-width:1280px">
     <v-tabs>
       <v-tab href="#tab-1">{{ $t("t_category_info") }}</v-tab>
-      <v-tab href="#tab-2" v-if="packID >= 0">{{ $t("t_category_description") }}</v-tab>
-      <v-tab href="#tab-3" v-if="packID >= 0">{{ $t("t_category_file") }}</v-tab>
+      <v-tab href="#tab-2" v-if="packID >= 1">{{
+        $t("t_category_description")
+      }}</v-tab>
+      <v-tab href="#tab-3" v-if="packID >= 1">{{
+        $t("t_category_file")
+      }}</v-tab>
       <v-tab-item value="tab-1">
         <v-form v-model="formValid" ref="editForm">
           <p class="mt-4 mb-0">
@@ -39,7 +43,10 @@
           <v-card class="mt-4">
             <v-card-title class="pb-0">{{ $t("f_pack_name") }}</v-card-title>
             <v-card-text>
-              <string-3-input v-model="pack.Name" :rule="[v => v.ok]"></string-3-input>
+              <string-3-input
+                v-model="pack.Name"
+                :rule="[v => v.ok]"
+              ></string-3-input>
             </v-card-text>
           </v-card>
           <v-card class="mt-4">
@@ -52,23 +59,32 @@
                     row
                     v-model="isRepost"
                     class="mt-0"
-                    :rules="[v => (v === true || v === false || 'What the hell')]"
+                    :rules="[v => v === true || v === false || 'What the hell']"
                   >
                     <template v-slot:label>
-                      <span style="color:red">{{ $t("t_pack_origin_question") }}</span>
+                      <span style="color:red">{{
+                        $t("t_pack_origin_question")
+                      }}</span>
                     </template>
                     <v-radio
                       :value="false"
                       :label="this.$i18n.t('t_pack_origin_yes')"
                       color="green"
                     ></v-radio>
-                    <v-radio :value="true" :label="this.$i18n.t('t_pack_origin_no')" color="red"></v-radio>
+                    <v-radio
+                      :value="true"
+                      :label="this.$i18n.t('t_pack_origin_no')"
+                      color="red"
+                    ></v-radio>
                   </v-radio-group>
                   <h3 v-if="isRepost">{{ $t("t_pack_origin_tip") }}</h3>
                 </v-col>
               </v-row>
               <template v-if="isRepost">
-                <string-3-input v-model="pack.Author.Name" :rule="[v => v.ok]"></string-3-input>
+                <string-3-input
+                  v-model="pack.Author.Name"
+                  :rule="[v => v.ok]"
+                ></string-3-input>
                 <v-row>
                   <v-col cols="12" md="4" sm="6" class="pb-0 pt-0">
                     <v-text-field
@@ -104,7 +120,9 @@
             </v-card-text>
           </v-card>
           <v-card class="mt-4">
-            <v-card-title class="pb-0">{{ $t("f_pack_thumbnail") }}</v-card-title>
+            <v-card-title class="pb-0">{{
+              $t("f_pack_thumbnail")
+            }}</v-card-title>
             <v-card-text>
               <h3 v-html="this.$i18n.t('f_pack_thumbnail_tip')"></h3>
               <v-row>
@@ -127,6 +145,16 @@
             </v-card-text>
           </v-card>
           <v-btn
+            color="error"
+            class="mt-4"
+            large
+            @click="removePackage"
+            v-if="packID >= 1"
+          >
+            <v-icon class="mr-3">mdi-delete</v-icon>
+            {{ $t("l_pack_remove") }}
+          </v-btn>
+          <v-btn
             color="success"
             large
             class="mt-4 mb-10 float-right"
@@ -134,15 +162,21 @@
             @click="submitForm"
           >
             <v-icon class="mr-3">mdi-content-save</v-icon>
-            {{ packID >= 0 ? $t("l_pack_change") : $t("l_pack_create") }}
+            {{ packID >= 1 ? $t("l_pack_change") : $t("l_pack_create") }}
           </v-btn>
         </v-form>
       </v-tab-item>
       <v-tab-item value="tab-2">
         <codemirror
           v-model="pack.Description"
-          :options="{ mode: 'htmlmixed', tabSize: 2,
-          viewportMargin: Infinity, lineNumbers: true, line: true, lineWrapping: true}"
+          :options="{
+            mode: 'htmlmixed',
+            tabSize: 2,
+            viewportMargin: Infinity,
+            lineNumbers: true,
+            line: true,
+            lineWrapping: true
+          }"
           class="mt-4"
         ></codemirror>
         <v-btn
@@ -156,7 +190,9 @@
           {{ $t("l_pack_description") }}
         </v-btn>
       </v-tab-item>
-      <v-tab-item value="tab-3"></v-tab-item>
+      <v-tab-item value="tab-3" class="pt-4">
+        <file-list v-model="pack"></file-list>
+      </v-tab-item>
     </v-tabs>
   </v-container>
 </template>
@@ -188,7 +224,7 @@ export default {
     codemirror
   },
   data: () => ({
-    packID: -1,
+    packID: 0,
     formValid: false,
     isRepost: false,
     pack: { Name: {}, Author: { Name: {} }, Description: "" }
@@ -196,7 +232,7 @@ export default {
   computed: {
     canModifyID() {
       return (
-        this.packID < 0 ||
+        this.packID < 1 ||
         (this.$store.state.profile && this.$store.state.profile.Privilege >= 50)
       );
     }
@@ -210,21 +246,24 @@ export default {
         this.pack.Name.English = "";
       if (String(this.pack.Author.Name.Local).match(englishRegex))
         this.pack.Author.Name.English = "";
-      if (!this.isRepost) this.pack.Author = { Name: { Local: null, }};
+      if (!this.isRepost) this.pack.Author = {};
       // Shrink request size by removing unnecessery fields
       delete this.pack.Description;
       delete this.pack.Uploader;
       delete this.pack.Files;
-      this.pack.IsRepost = this.isRepost;
       var that = this;
-      if (this.packID < 0) {
+      if (this.packID < 1) {
         this.$http
           .put(this.$apiRootURL + "/packages", this.pack)
           .then(function(responseA) {
             that.$router.push("/package/edit/" + responseA.data.ID);
-            that.$dialog.message.success(that.$i18n.t("t_toast_created"), {
-              position: "top-right"
-            });
+            that.$store.commit("packListUpdate", that.pack);
+            that.$dialog.message.success(
+              that.$i18n.t("t_toast_created_then_edit"),
+              {
+                position: "top-right"
+              }
+            );
           })
           .catch(function(exception) {
             handleNetworkErr(exception, that);
@@ -251,7 +290,7 @@ export default {
     submitDescription() {
       var payload = { Description: this.pack.Description };
       var that = this;
-      if (this.packID >= 0) {
+      if (this.packID >= 1) {
         this.$http
           .post(this.$apiRootURL + "/packages/" + this.packID, payload)
           .then(function(responseA) {
@@ -266,6 +305,35 @@ export default {
           });
       }
     },
+    removePackage() {
+      var that = this;
+      if (this.packID >= 1) {
+        this.$dialog
+          .confirm({
+            text: this.$i18n.t("t_remove_warn"),
+            title: this.$i18n.t("t_remove_warn_title")
+          })
+          .then(res => {
+            if (res) {
+              that.$http
+                .delete(that.$apiRootURL + "/packages/" + that.packID)
+                .then(function() {
+                  that.$store.commit("packListRemove", that.packID);
+                  that.$router.push("/package/list");
+                  that.$dialog.message.warning(
+                    that.$i18n.t("t_toast_removed"),
+                    {
+                      position: "top-right"
+                    }
+                  );
+                })
+                .catch(function(exception) {
+                  handleNetworkErr(exception, that);
+                });
+            }
+          });
+      }
+    },
     fetchPackage(paramID) {
       if (paramID && paramID == parseInt(paramID, 10)) {
         EventBus.$emit("setOverlay", "loading");
@@ -277,7 +345,6 @@ export default {
             that.packID = responseA.data.ID;
             that.isRepost = !!responseA.data.Author;
             that.ensureModelBind();
-            console.log(that.pack);
             that.$store.commit("packListUpdate", that.pack);
             EventBus.$emit("setOverlay", "");
           })
@@ -286,7 +353,7 @@ export default {
           });
       } else {
         this.pack = {};
-        this.packID = -1;
+        this.packID = 0;
         this.isRepost = false;
         this.ensureModelBind();
       }
@@ -294,7 +361,7 @@ export default {
     ensureModelBind() {
       // Let the String3Inputs attach somewhere
       if (!this.pack.Name) this.$set(this.pack, "Name", {});
-      if (!this.pack.Author){
+      if (!this.pack.Author) {
         this.$set(this.pack, "Author", {});
         this.$set(this.pack.Author, "Name", {});
       }

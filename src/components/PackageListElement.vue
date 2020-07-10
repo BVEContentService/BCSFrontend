@@ -1,12 +1,18 @@
 <template>
   <div style="position: relative">
-    <v-btn rounded color="primary" class="editFab" v-if="isEditable" :to="editURL">
+    <v-btn
+      rounded
+      color="primary"
+      class="editFab"
+      v-if="isEditable"
+      :to="editURL"
+    >
       <v-icon>mdi-pencil</v-icon>
     </v-btn>
     <v-card link :to="detailURL">
-      <div class="d-flex flex-no-wrap">
-        <img :src="thumbnailURL" :height="125" :width="125/9*16" />
-        <div>
+      <div class="d-flex flex-no-wrap thumbnail-container">
+        <img :src="thumbnailURL" class="thumbnail" />
+        <div class="card-content">
           <v-card-title class="headline">{{ displayName }}</v-card-title>
           <v-card-subtitle class="pt-1">
             <v-icon>mdi-information</v-icon>
@@ -22,6 +28,19 @@
 </template>
 
 <style scoped>
+.thumbnail-container {
+  position: relative;
+}
+.thumbnail {
+  position: absolute;
+  height: 100%;
+  width: 200px;
+  object-fit: cover;
+}
+.card-content {
+  height: 100%;
+  margin-left: 200px;
+}
 .editFab {
   position: absolute;
   right: 10px;

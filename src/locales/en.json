@@ -1,14 +1,16 @@
 {
-  "t_app_name": "OpenBVE MCS",
+  "t_app_name": "BVE Content Service",
   "t_loading": "Loading...",
   "t_back": "Back",
 
 
   "t_error_title": "Operation Failed",
   "e_network": "Failed establishing a connection to the server.<br>Please check your network connection.",
+  "e_token_expire": "You have not logged in or your session just expired.<br>Please refresh the page after logging in.",
   "e_201": "The resource requested does not exist.",
   "e_202": "The Identifier Name is already taken.<br>Please try another one.",
   "e_203": "The GUID is already taken.<br>Please try another one.",
+  "e_204": "A file with the same Platform and Version is already registered.",
   "e_212": "Incorrect username or password.<br>Please try again.",
   "e_221": "You are not authorized to perform this action.",
 
@@ -16,6 +18,7 @@
   "e_email_bad": "This Email is not in a valid format.",
   "e_url_bad": "This URL is not in a valid format.",
   "e_str_trim": "Space must not be present on either ends.",
+  "e_relative_path": "Relative path must begin with a leading slash.",
 
 
   "l_frame_login": "Login",
@@ -73,6 +76,38 @@
   "l_pack_change": "Submit Info",
   "l_pack_description": "Submit Description",
   "l_pack_create": "Create Package",
+  "l_pack_remove": "Remove Package",
   "t_toast_saved": "Saved!",
-  "t_toast_created": "Created! You can now edit more information."
+  "t_toast_created": "Created!",
+  "t_toast_created_then_edit": "Created! You can now edit more information.",
+  "t_toast_removed": "Removed!",
+
+  "f_file_platform": "Platform",
+  "f_file_version": "Version",
+  "f_file_service": "File Storage Service",
+  "f_file_s_plain": "HTTP Direct Link Download",
+  "f_file_s_auth": "HTTPS with Basic Auth",
+  "f_file_s_google": "Google Drive Share",
+  "f_file_s_teracloud": "TeraCloud WebDAV",
+  "f_file_s_onedrive": "OneDrive Share",
+  "f_file_s_pandog": "Pan.Dog WebDAV",
+  "f_file_s_bcstianjin": "BCS Tianjin Public Source",
+  "f_file_p1_url": "Direct URL",
+  "f_file_p1_share": "Share Link",
+  "f_file_p1_path": "Relative Path",
+  "f_file_p2_username": "Username",
+  "f_file_p2_email": "Email",
+  "f_file_p2_password": "Password",
+
+  "e_version_bad": "Version should be like x.x(.x)(.x), where x is an integer and parts in brackets are optional.",
+  "e_file_google_bad": "This does not seem to be a Google Drive share link.",
+  "e_file_onedrive_bad": "This does not seem to be a OneDrive share link.",
+
+  "t_file_create": "Add a File",
+  "l_file_change": "Update File",
+  "l_file_create": "Create File",
+  "l_file_remove": "Remove File",
+
+  "t_remove_warn": "Are you sure you want to remove this item? This could never be undone.",
+  "t_remove_warn_title": "Confirm Removal"
 }

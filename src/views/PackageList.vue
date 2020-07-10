@@ -1,16 +1,22 @@
 <template>
-  <paginated-list tag="package-list-element" v-bind:items="packages"></paginated-list>
+  <paginated-list
+    tag="package-list-element"
+    v-bind:items="packages"
+  ></paginated-list>
 </template>
 
 <script>
 import { handleNetworkErr } from "../utils/ErrorHelper.js";
 import { EventBus } from "../utils/EventBus.js";
 export default {
-  computed: {
+  /*computed: {
     packages() {
       return this.$store.state.packageList;
     }
-  },
+  },*/
+  data: () => ({
+    packages: []
+  }),
   methods: {
     fetchPackages() {
       this.error = "";
@@ -20,6 +26,7 @@ export default {
         .get(this.$apiRootURL + "/packages")
         .then(function(responseB) {
           that.$store.commit("packListLoad", responseB.data);
+          that.packages = responseB.data;
           EventBus.$emit("setOverlay", "");
         })
         .catch(function(exception) {
@@ -28,8 +35,12 @@ export default {
     }
   },
   mounted() {
-    if (!this.$store.state.packageList || !this.$store.state.packageList.length)
-      this.fetchPackages();
+    //if (!this.$store.state.packageList || !this.$store.state.packageList.length)
+    this.fetchPackages();
   },
+  beforeRouteUpdate(to, from, next) {
+    this.fetchPackage();
+    next();
+  }
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <v-container style="max-width:1280px">
-    <v-row>
-      <v-col cols="12" md="3" sm="5" style="max-width:260px">
+    <div class="d-flex flex-wrap flex-container">
+      <div class="col1">
         <img class="profile-img" :src="gravatarURL" style="max-width:240px" />
         <h1 class="mb-4 mt-2">{{displayName}}</h1>
         <p class="mb-1">
@@ -16,17 +16,27 @@
           <v-icon class="mr-2">mdi-earth</v-icon>
           <a :href="profile.Homepage">{{profile.Homepage}}</a>
         </p>
-      </v-col>
-      <v-col>
+      </div>
+      <div class="col2">
         <div class="mt-4" v-html="profile.Description"></div>
         <v-divider class="mt-5 mb-3"></v-divider>
         <paginated-list tag="package-list-element" v-bind:items="profile.Packages"></paginated-list>
-      </v-col>
-    </v-row>
+      </div>
+    </div>
   </v-container>
 </template>
 
 <style scoped>
+.flex-container {
+  flex: 1;
+}
+.col1 {
+  min-width: 260px;
+}
+.col2 {
+  flex-grow:1;
+  min-width: 500px;
+}
 h1 {
   line-height: 1em;
 }
