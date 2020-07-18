@@ -1,13 +1,26 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import i18n from "../i18n.js";
 
 Vue.use(Vuex);
 
+function tryLanguages() {
+  var userLanguage = window.navigator.language || window.navigator.userLanguage;
+  var languages = Object.keys(i18n.messages);
+  if (languages.indexOf(userLanguage) >= 0) return userLanguage;
+  for (var i = 0; i < languages.length; i++) {
+    var langParts = languages[i].split("-");
+    var userLangParts = userLanguage.split("-");
+    if (langParts[0] == userLangParts[0]) return languages[i];
+  }
+  return "en";
+}
+
 export default new Vuex.Store({
   state: {
-    token: "" || localStorage.getItem("JWT_TOKEN"),
-    profile: null || JSON.parse(localStorage.getItem("PROFILE")),
-    packageList: [],
+    token: localStorage.getItem("JWT_TOKEN") || "",
+    profile: JSON.parse(localStorage.getItem("PROFILE")) || null,
+    lang: window.localStorage.getItem("LANGUAGE") || tryLanguages(),
     englishName: false
   },
   mutations: {
@@ -16,6 +29,9 @@ export default new Vuex.Store({
       state.profile = payload.profile;
       localStorage.setItem("JWT_TOKEN", state.token);
       localStorage.setItem("PROFILE", JSON.stringify(state.profile));
+    },
+    refreshToken(state, payload) {
+      state.token = payload;
     },
     profileUpdate(state, profile) {
       state.profile = profile;
@@ -30,14 +46,9 @@ export default new Vuex.Store({
     toggleEnglishName(state) {
       state.englishName = !state.englishName;
     },
-    packListLoad(state, payload) {
-      state.packageList = payload;
-    },
-    packListUpdate(state, payload) {
-      state.packageList[payload.ID] = payload;
-    },
-    packListRemove(state, id) {
-      if (state.packageList[id]) delete state.packageList[id];
+    onLangChanged(state, payload) {
+      window.localStorage.setItem("LANGUAGE", payload);
+      state.lang = payload;
     }
   }
 });

@@ -18,7 +18,7 @@ const requireComponent = require.context(
   false,
   /[A-Z]\w+\.(vue|js)$/
 );
-requireComponent.keys().forEach((fileName) => {
+requireComponent.keys().forEach(fileName => {
   const componentConfig = requireComponent(fileName);
   const componentName = upperFirst(
     camelCase(
@@ -35,17 +35,17 @@ Vue.use(VuetifyDialog, {
   context: { vuetify },
   error: { icon: "mdi-alert-circle" },
   warning: { icon: "mdi-information" },
-  success: { icon: "mdi-check-circle" },
+  success: { icon: "mdi-check-circle" }
 });
 
 axios.interceptors.request.use(
-  (config) => {
+  config => {
     if (localStorage.JWT_TOKEN) {
       config.headers.Authorization = `Bearer ${localStorage.JWT_TOKEN}`;
     }
     return config;
   },
-  (err) => {
+  err => {
     return Promise.reject(err);
   }
 );
@@ -58,7 +58,7 @@ new Vue({
   vuetify,
   i18n,
   store,
-  render: (h) => h(App),
+  render: h => h(App)
 }).$mount("#app");
 
 router.beforeEach((to, from, next) => {

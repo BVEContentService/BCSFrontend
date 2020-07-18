@@ -1,31 +1,47 @@
 {
+  "t_lang_name": "English",
+  "t_eat_glass": "I can eat glass and it doesn't hurt me.",
+
   "t_app_name": "BVE Content Service",
   "t_loading": "Loading...",
   "t_back": "Back",
+  "t_refresh": "Refresh",
 
 
   "t_error_title": "Operation Failed",
   "e_network": "Failed establishing a connection to the server.<br>Please check your network connection.",
   "e_token_expire": "You have not logged in or your session just expired.<br>Please refresh the page after logging in.",
+  "e_111": "Parameter format invalid. This indicates a program error, and please get the developers informed!",
+  "e_112": "Parameter validation failed. This indicates a program error, and please get the developers informed!<br>The problem occured at:  {data}",
+  "e_113": "Range syntax invalid. This indicates a program error, and please get the developers informed!",
+  "e_114": "Range value invalid. This indicates a program error, and please get the developers informed!",
   "e_201": "The resource requested does not exist.",
   "e_202": "The Identifier Name is already taken.<br>Please try another one.",
   "e_203": "The GUID is already taken.<br>Please try another one.",
   "e_204": "A file with the same Platform and Version is already registered.",
+  "e_205": "This email has already been registered.",
   "e_212": "Incorrect username or password.<br>Please try again.",
+  "e_213": "The next activation email can only be sent after:<br>{data}.<br>Please wait.",
+  "e_214": "This activation link has expired.<br>Please send another email.",
   "e_221": "You are not authorized to perform this action.",
 
   "e_required": "This field is requied.",
   "e_email_bad": "This Email is not in a valid format.",
   "e_url_bad": "This URL is not in a valid format.",
   "e_str_trim": "Space must not be present on either ends.",
+  "e_str_len": "Must be at least {len} characters long.",
   "e_relative_path": "Relative path must begin with a leading slash.",
 
 
   "l_frame_login": "Login",
+  "l_frame_register": "Register",
+  "l_frame_editprofile": "Edit Profile",
   "l_frame_logout": "Logout",
   "l_frame_home": "Home",
   "l_frame_packages": "Packages",
   "l_frame_credit": "Credit",
+  "t_frame_admin": "Admin Functions",
+  "l_frame_files": "File Validation",
 
 
   "t_login_title": "Login",
@@ -36,6 +52,9 @@
   "t_toast_login_resubmit": "Logged in! Please submit your request again.",
   "t_toast_logout": "Logged out!",
 
+  "t_uploader": "Uploader",
+  "t_author": "Author",
+
 
   "f_s3_local": "Name (Local Language)",
   "f_s3_english": "Name (English)",
@@ -45,6 +64,12 @@
   "e_s3_english_req": "English Name is requied if local language is not English",
   "e_s3_english_bad": "English Name must be in English",
 
+  "t_htmleditor_preview": "Preview",
+  "t_htmleditor_wysiwyg": "Simple Editor",
+  "t_htmleditor_codemirror": "Advanced Editor",
+  "t_htmleditor_image_url": "Insert Image (From URL)",
+  "t_htmleditor_image_file": "Insert Image (Upload File)",
+  "t_htmleditor_image_prompt": "The URL of the Image to insert:",
 
   "t_category_info": "Basic Info",
   "t_category_description": "Description",
@@ -65,7 +90,7 @@
   "f_homepage": "Homepage",
   "f_pack_homepage_tip": "A web page providing dedicated information of the package.",
   "f_pack_thumbnail": "Thumbnail Image",
-  "f_pack_thumbnail_tip": "You can use online services to host your image. Take <a href=\"https://imgchr.com\" target=\"_blank\">imgchr.com</a> as an example, copy \"Image URL\" into the first field, and \"Thumbnail URL\" into the second field.",
+  "f_pack_thumbnail_host": "Upload via imgchr.com",
   "f_thumbnail_url": "Full Resolution Thumbnail Image URL",
   "f_thumbnail_lq_url": "Lower Quality Thumbnail Image URL (Optional)",
 
@@ -75,15 +100,21 @@
 
   "l_pack_change": "Submit Info",
   "l_pack_description": "Submit Description",
-  "l_pack_create": "Create Package",
+  "l_pack_create": "New Package",
   "l_pack_remove": "Remove Package",
+  "t_toast_uploading": "Uploading...",
+  "t_toast_done": "Done!",
   "t_toast_saved": "Saved!",
   "t_toast_created": "Created!",
   "t_toast_created_then_edit": "Created! You can now edit more information.",
   "t_toast_removed": "Removed!",
 
+  "t_pack_no_file": "Download not available",
+  "l_file_download": "Download",
+
   "f_file_platform": "Platform",
   "f_file_version": "Version",
+  "f_file_size": "Size",
   "f_file_service": "File Storage Service",
   "f_file_s_plain": "HTTP Direct Link Download",
   "f_file_s_auth": "HTTPS with Basic Auth",
@@ -99,7 +130,16 @@
   "f_file_p2_email": "Email",
   "f_file_p2_password": "Password",
 
-  "e_version_bad": "Version should be like x.x(.x)(.x), where x is an integer and parts in brackets are optional.",
+  "f_file_validation": "Validated",
+  "t_file_validation_await": "Awaiting Validation",
+  "t_file_validation_help": "Why?",
+  "t_file_validation_warn": "For your information, after editing, this file will be no longer validated, and will have to go through the inspection again.",
+  "l_file_validation_do": "Validate",
+  "l_file_validation_undo": "Invalidate",
+  "l_file_show_package": "Show Associated Package",
+
+  "e_version_bad": "Version should be like '1.2(.3)(.4)', where each part is an integer and parts in brackets are optional.",
+  "e_size_bad": "Size should be like '72.1 MB', with a single space in between, and the unit can be B/KB/MB/GB/TB uppercase.",
   "e_file_google_bad": "This does not seem to be a Google Drive share link.",
   "e_file_onedrive_bad": "This does not seem to be a OneDrive share link.",
 
@@ -109,5 +149,37 @@
   "l_file_remove": "Remove File",
 
   "t_remove_warn": "Are you sure you want to remove this item? This could never be undone.",
-  "t_remove_warn_title": "Confirm Removal"
+  "t_remove_warn_title": "Confirm Removal",
+
+  "t_filter_all": "All",
+  "t_filter_empty": "No resource matches this criteria.",
+
+  "t_user_register": "Register Account",
+  "t_user_activate": "Activate Account",
+  "l_user_register": "Register",
+  "l_user_activate": "Activate",
+  "t_user_email_sent": "Email Sent",
+  "t_user_email_sent_tip": "An register confirmation email has been sent. <br>Please check the junk mail folder if the mail is not inside the inbox.<br>The link sent with the mail is valid before:<br>{expiry}<br>You can close or leave this page.",
+  "f_user_email": "Email",
+  "e_user_token_expire": "This token has expired. Please register again.",
+  "t_user_token_valid": "Your email address has passed validation.",
+  "f_user_account_info": "Account Information",
+  "f_user_idname": "Identifier Name (Username)",
+  "f_user_name": "Display Name",
+  "t_user_name_help": "How?",
+  "f_user_password": "Password",
+  "f_user_password_2": "Confirm Password",
+  "e_user_idname_limit": "Only lowercase characters, numbers, en dash and underscore may be used. It also must start with a lowercase character.",
+  "e_user_password_diff": "Passwords do not match.",
+  "f_user_avatar": "Avatar",
+  "f_user_avatar_tip": "We use Gravatar to host avatar images.<br/>After updating, you might need to refresh the page to see the change.",
+  "f_user_avatar_gravatar": "Upload via Gravatar",
+
+  "t_user_change_password": "Change Password",
+  "l_user_change_password": "Change Password",
+  "f_user_password_previous": "Previous Password",
+  "f_user_password_new": "New Password",
+
+  "l_user_change": "Submit Info",
+  "l_user_description": "Submit Description"
 }

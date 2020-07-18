@@ -7,7 +7,8 @@
         size="200"
         width="16"
         color="primary"
-      >{{ $t("t_loading") }}</v-progress-circular>
+        >{{ $t("t_loading") }}</v-progress-circular
+      >
       <v-col v-else cols="12" sm="8" md="6" lg="4">
         <v-card class="elevation-4">
           <v-toolbar color="error" dark flat dense>
@@ -23,6 +24,18 @@
             <v-btn color="primary" class="pr-4 pl-2" @click="historyBack()">
               <v-icon class="mr-4">mdi-arrow-left</v-icon>
               {{ $t("t_back") }}
+            </v-btn>
+            <v-btn
+              color="primary"
+              class="pr-4 pl-2"
+              @click="
+                () => {
+                  this.$router.go();
+                }
+              "
+            >
+              <v-icon class="mr-4">mdi-refresh</v-icon>
+              {{ $t("t_refresh") }}
             </v-btn>
           </v-card-actions>
         </v-card>

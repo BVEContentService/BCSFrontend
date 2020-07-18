@@ -1,10 +1,13 @@
 <template>
   <v-expansion-panels multiple>
-    <v-expansion-panel>
-      <v-expansion-panel-header color="primary" class="veph-dark justify-self-start">
+    <v-expansion-panel v-if="newFilePackageID >= 1">
+      <v-expansion-panel-header
+        color="primary"
+        class="veph-dark justify-self-start"
+      >
         <div>
           <v-icon dark class="mr-2">mdi-card-plus</v-icon>
-          <span>{{ $t("t_file_create") }}</span>
+          <small class="ml-2">{{ $t("t_file_create") }}</small>
         </div>
       </v-expansion-panel-header>
       <v-expansion-panel-content>
@@ -31,12 +34,12 @@
             </v-col>
           </v-row>
         </v-form>
-        <file-list-component
+        <file-list-element
           :file="newFileModel"
           :createCallback="syncFileCreate"
           :updateCallback="syncFileUpdate"
           :removeCallback="syncFileRemove"
-        ></file-list-component>
+        ></file-list-element>
       </v-expansion-panel-content>
     </v-expansion-panel>
     <v-expansion-panel v-for="file in sortedFileList" v-bind:key="file.ID">
@@ -44,22 +47,46 @@
         :color="platformMap[file.Platform].bgColor"
         :class="platformMap[file.Platform].dark ? 'veph-dark' : 'veph'"
       >
-        {{ file.Version }}
+        <template v-if="showFileID">#{{ file.ID }} v</template
+        >{{ file.Version }}
         <small class="ml-2">{{ platformMap[file.Platform].name }}</small>
+        <span
+          v-if="file.NeedValidation && !file.Validated"
+          class="ml-3 text-right"
+        >
+          <span class="d-table-cell">{{ $t("t_file_validation_await") }}</span>
+          <a
+            href=""
+            target="_blank"
+            style="color:black"
+            class="d-table-cell pl-2 pr-1"
+          >
+            <sub>{{ $t("t_file_validation_help") }}</sub>
+          </a>
+        </span>
       </v-expansion-panel-header>
       <v-expansion-panel-content>
-        <file-list-component
+        <v-btn
+          v-if="showFileID"
+          link
+          :to="'/package/detail/' + file.PackageID"
+          class="mt-3"
+        >
+          <v-icon class="mr-3">mdi-folder</v-icon>
+          {{ $t("l_file_show_package") }}
+        </v-btn>
+        <file-list-element
           :file="file"
           :createCallback="syncFileCreate"
           :updateCallback="syncFileUpdate"
           :removeCallback="syncFileRemove"
-        ></file-list-component>
+        ></file-list-element>
       </v-expansion-panel-content>
     </v-expansion-panel>
   </v-expansion-panels>
 </template>
 
-<style>
+<style scoped>
 .v-expansion-panel-header {
   font-size: 1.5rem;
   padding: 12px 24px;
@@ -68,12 +95,16 @@
 .veph-dark {
   color: white;
 }
+.veph-dark a {
+  color: white !important;
+}
 .veph-dark div i {
   color: white !important;
 }
 </style>
 
 <script>
+import mapping from "../config/mapping.js";
 function versionCompare(v1, v2) {
   var lexicographical = false,
     zeroExtend = true,
@@ -111,10 +142,10 @@ function versionCompare(v1, v2) {
   return 0;
 }
 export default {
-  name: "file-list-element",
+  name: "file-list",
   computed: {
     sortedFileList() {
-      return [...this.value.Files].sort(
+      return [...this.value].sort(
         (a, b) => -versionCompare(a.Version, b.Version)
       );
     },
@@ -127,17 +158,13 @@ export default {
   },
   data: function() {
     return {
-      platformMap: {
-        openbve: { name: "OpenBVE", bgColor: "#636363", dark: true },
-        bvets5: { name: "BVE 5", bgColor: "#A7DC41", dark: false },
-        hmmsim: { name: "Hmmsim", bgColor: "#569E7B", dark: true },
-        bvets6: { name: "BVE 6", bgColor: "#000000", dark: true }
-      },
+      platformMap: mapping.platform,
       newFileIDFormValid: false,
       newFileModel: {
         ID: 0,
-        PackageID: this.value.ID,
+        PackageID: this.newFilePackageID,
         Platform: "openbve",
+        Size: "114.19 MB",
         Version: "1.0",
         Service: "plain"
       }
@@ -150,20 +177,20 @@ export default {
       });
     },
     syncFileCreate(model) {
-      this.value.Files.push(model);
+      this.value.push(model);
     },
     syncFileUpdate(model) {
-      for (var i = 0; i < this.value.Files.length; i++) {
-        if (this.value.Files[i].ID == model.ID) {
-          this.$set(this.value.Files, i, model);
+      for (var i = 0; i < this.value.length; i++) {
+        if (this.value[i].ID == model.ID) {
+          this.$set(this.value, i, model);
           break;
         }
       }
     },
     syncFileRemove(id) {
-      for (var i = 0; i < this.value.Files.length; i++) {
-        if (this.value.Files[i].ID == id) {
-          this.value.Files.splice(i, 1);
+      for (var i = 0; i < this.value.length; i++) {
+        if (this.value[i].ID == id) {
+          this.value.splice(i, 1);
           break;
         }
       }
@@ -177,10 +204,10 @@ export default {
       );
     },
     r_conflict() {
-      for (var i = 0; i < this.value.Files.length; i++) {
+      for (var i = 0; i < this.value.length; i++) {
         if (
-          this.value.Files[i].Platform == this.newFileModel.Platform &&
-          this.value.Files[i].Version == this.newFileModel.Version
+          this.value[i].Platform == this.newFileModel.Platform &&
+          this.value[i].Version == this.newFileModel.Version
         ) {
           return this.$i18n.t("e_204");
         }
@@ -188,6 +215,6 @@ export default {
       return true;
     }
   },
-  props: ["value"]
+  props: ["value", "newFilePackageID", "showFileID"]
 };
 </script>

@@ -1,40 +1,45 @@
 <template>
-  <v-container style="max-width:1280px">
+  <narrow-container>
     <div class="d-flex flex-wrap flex-container">
       <div class="col1">
-        <img class="profile-img" :src="gravatarURL" style="max-width:240px" />
-        <h1 class="mb-4 mt-2">{{displayName}}</h1>
+        <div style="position: relative">
+          <img class="profile-img" :src="gravatarURL" style="max-width:240px" />
+          <edit-fab v-if="canEdit" :to="editURL"></edit-fab>
+        </div>
+        <h1 class="mb-4 mt-2">{{ displayName }}</h1>
         <p class="mb-1">
           <v-icon class="mr-2">mdi-account</v-icon>
-          <em>{{profile.Username}}</em>
+          <em>{{ profile.Username }}</em>
         </p>
         <p v-if="profile.Email" class="mb-1">
           <v-icon class="mr-2">mdi-email</v-icon>
-          <a :href="'mailto:'+profile.Email">{{profile.Email}}</a>
+          <a :href="'mailto:' + profile.Email">{{ profile.Email }}</a>
         </p>
         <p v-if="profile.Homepage" class="mb-1">
           <v-icon class="mr-2">mdi-earth</v-icon>
-          <a :href="profile.Homepage">{{profile.Homepage}}</a>
+          <a :href="profile.Homepage">{{ profile.Homepage }}</a>
         </p>
       </div>
       <div class="col2">
         <div class="mt-4" v-html="profile.Description"></div>
         <v-divider class="mt-5 mb-3"></v-divider>
-        <paginated-list tag="package-list-element" v-bind:items="profile.Packages"></paginated-list>
+        <paginated-list
+          tag="package-list-element"
+          :items="profile.Packages"
+          :totalLength="profile.Packages.length"
+          :switchCallback="updatePackagePager"
+        ></paginated-list>
       </div>
     </div>
-  </v-container>
+  </narrow-container>
 </template>
 
 <style scoped>
-.flex-container {
-  flex: 1;
-}
 .col1 {
-  min-width: 260px;
+  width: 260px;
 }
 .col2 {
-  flex-grow:1;
+  flex-grow: 1;
   min-width: 500px;
 }
 h1 {
@@ -68,8 +73,11 @@ export default {
           Local: t_loading,
           English: t_loading,
           Tag: t_loading
-        }
-      }
+        },
+        Packages: []
+      },
+      pagerRangeL: 0,
+      pagerRangeR: 9
     };
   },
   computed: {
@@ -90,6 +98,22 @@ export default {
     },
     displayName() {
       return s3(this.profile.Name, this.$store.state.englishName);
+    },
+    slicedPackage() {
+      return this.profile.Packages.slice(
+        this.pagerRangeL,
+        this.pagerRangeR + 1
+      );
+    },
+    canEdit() {
+      return (
+        this.$store.state.profile &&
+        (this.$store.state.profile.ID == this.profile.ID ||
+          this.$store.state.profile.Privilege >= 50)
+      );
+    },
+    editURL() {
+      return "/profile/edit/" + this.profile.ID;
     }
   },
   methods: {
@@ -109,11 +133,18 @@ export default {
         .get(this.$apiRootURL + "/uploaders/" + uid)
         .then(function(responseB) {
           that.profile = responseB.data;
+          // Let the view model attach somewhere
+          if (!that.profile.Packages) that.profile.Packages = [];
           EventBus.$emit("setOverlay", "");
         })
         .catch(function(exception) {
           handleNetworkErr(exception, that, "overlay");
         });
+    },
+    updatePackagePager(rangeL, rangeR) {
+      // For future usage, just in case the profile package list backend supports pagination
+      this.pagerRangeL = rangeL;
+      this.pagerRangeR = rangeR;
     }
   },
   mounted() {

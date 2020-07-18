@@ -1,29 +1,48 @@
 <template>
-  <v-container v-if="items && items.length">
-    <v-row dense class="mb-3">
-      <v-btn-toggle rounded v-model="itemsPerPage">
-        <v-btn :value="5">5</v-btn>
-        <v-btn :value="10">10</v-btn>
-        <v-btn :value="114514">
-          <v-icon>mdi-infinity</v-icon>
-        </v-btn>
+  <v-container>
+    <v-row v-if="totalLength > 0" dense class="mb-3">
+      <v-btn-toggle rounded v-model="itemsPerPage" mandatory>
+        <v-btn :value="5" :disabled="disabled">5</v-btn>
+        <v-btn :value="10" :disabled="disabled">10</v-btn>
+        <v-btn :value="20" :disabled="disabled">20</v-btn>
       </v-btn-toggle>
-      <v-pagination v-model="page" :length="pagerLength" :page="page" :total-visible="8"></v-pagination>
+      <v-pagination
+        v-model="page"
+        :length="pagerLength"
+        :page="page"
+        :total-visible="8"
+        :disabled="disabled"
+      ></v-pagination>
     </v-row>
     <v-row dense>
-      <v-col v-for="(item, i) in offsetItems" :key="i" cols="12">
-        <component :is="tag" v-bind:item="item"></component>
+      <slot></slot>
+      <v-col v-if="totalLength == 0">
+        <v-icon large class="mr-4 ml-3">mdi-alert-circle</v-icon>
+        <span>{{ $t("t_filter_empty") }}</span>
       </v-col>
+      <template v-if="items && items.length">
+        <v-col v-for="(item, i) in items" :key="i" cols="12">
+          <component
+            :is="tag"
+            v-bind:item="item"
+            v-bind:disabled="disabled"
+          ></component>
+        </v-col>
+      </template>
     </v-row>
-    <v-row dense class="mt-3">
-      <v-btn-toggle rounded v-model="itemsPerPage">
-        <v-btn :value="5">5</v-btn>
-        <v-btn :value="10">10</v-btn>
-        <v-btn :value="114514">
-          <v-icon>mdi-infinity</v-icon>
-        </v-btn>
+    <v-row v-if="totalLength > 0" dense class="mt-3">
+      <v-btn-toggle rounded v-model="itemsPerPage" mandatory>
+        <v-btn :value="5" :disabled="disabled">5</v-btn>
+        <v-btn :value="10" :disabled="disabled">10</v-btn>
+        <v-btn :value="20" :disabled="disabled">20</v-btn>
       </v-btn-toggle>
-      <v-pagination v-model="page" :length="pagerLength" :page="page" :total-visible="8"></v-pagination>
+      <v-pagination
+        v-model="page"
+        :length="pagerLength"
+        :page="page"
+        :total-visible="8"
+        :disabled="disabled"
+      ></v-pagination>
     </v-row>
   </v-container>
 </template>
@@ -31,21 +50,32 @@
 <script>
 export default {
   name: "paginated-list",
+  computed: {
+    pagerLength() {
+      return Math.ceil(this.totalLength / this.itemsPerPage);
+    }
+  },
   data: () => ({
     itemsPerPage: 10,
     page: 1
   }),
-  computed: {
-    pagerLength: function() {
-      return Math.ceil(this.items.length / this.itemsPerPage);
+  watch: {
+    itemsPerPage(newIPP, oldIPP) {
+      var pageTopIndex = oldIPP * (this.page - 1);
+      var previousPage = this.page;
+      this.page = Math.floor(pageTopIndex / newIPP) + 1;
+      // Otherwise let the watcher of page do this
+      if (this.page == previousPage) this.onUpdatePaginator(newIPP, this.page);
     },
-    offsetItems: function() {
-      return this.items.slice(
-        (this.page - 1) * this.itemsPerPage,
-        this.page * this.itemsPerPage
-      );
+    page(newPG) {
+      this.onUpdatePaginator(this.itemsPerPage, newPG);
     }
   },
-  props: ["items","tag"]
+  methods: {
+    onUpdatePaginator(IPP, PG) {
+      this.switchCallback(IPP * (PG - 1), IPP * PG - 1);
+    }
+  },
+  props: ["items", "tag", "disabled", "totalLength", "switchCallback"]
 };
 </script>

@@ -2,7 +2,7 @@ import { EventBus } from "./EventBus.js";
 export function handleNetworkErr(error, vue, method = "dialog") {
   var errorString = "";
   if (error.response) {
-    if (error.response.status == 401) {
+    if (error.response.data.ErrorCode == 211) {
       vue.$store.commit("logout");
       EventBus.$emit("setLoginDialog", true);
       errorString = vue.$i18n.t("e_token_expire");
@@ -11,7 +11,13 @@ export function handleNetworkErr(error, vue, method = "dialog") {
       errorString = "HTTP Error Code: " + error.response.status + "<br>";
       if (error.response.data.ErrorCode) {
         if (vue.$i18n.te("e_" + error.response.data.ErrorCode)) {
-          errorString = vue.$i18n.t("e_" + error.response.data.ErrorCode);
+          if (error.response.data.Data) {
+            errorString = vue.$i18n.t("e_" + error.response.data.ErrorCode, {
+              data: error.response.data.Data
+            });
+          } else {
+            errorString = vue.$i18n.t("e_" + error.response.data.ErrorCode);
+          }
         } else {
           errorString +=
             "Internal Error Code: " + error.response.data.ErrorCode + "<br>";

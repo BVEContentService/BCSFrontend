@@ -21,7 +21,14 @@
           prepend-icon="mdi-lock"
           type="password"
         ></v-text-field>
-        <v-btn rounded block large @click="login()" :loading="querySent" :disabled="querySent">
+        <v-btn
+          rounded
+          block
+          large
+          @click="login()"
+          :loading="querySent"
+          :disabled="querySent"
+        >
           <v-icon class="mr-3">mdi-account</v-icon>Login
         </v-btn>
       </v-form>
@@ -48,39 +55,45 @@ export default {
       };
       if (credentials.username.trim() == "") return;
       this.querySent = true;
-      var that = this;
+      var vm = this;
       this.$http
         .post(this.$apiRootURL + "/auth/login", credentials)
         .then(function(responseA) {
           var uid = require("jsonwebtoken").decode(responseA.data.token).uid;
-          that.$http
-            .get(that.$apiRootURL + "/uploaders/" + uid)
+          vm.$http
+            .get(vm.$apiRootURL + "/uploaders/" + uid)
             .then(function(responseB) {
               if (responseB.data.Description) delete responseB.data.Description;
-              that.$store.commit("login", {
+              vm.$store.commit("login", {
                 token: responseA.data.token,
                 profile: responseB.data
               });
               EventBus.$emit("setLoginDialog", false);
-              if (that.reason == "badToken") {
-                that.$dialog.message.warning(that.$i18n.t("t_toast_login_resubmit"), {
-                  position: "top-right"
-                });
+              if (vm.reason == "badToken") {
+                vm.$dialog.message.warning(
+                  vm.$i18n.t("t_toast_login_resubmit"),
+                  {
+                    position: "top-right"
+                  }
+                );
               } else {
-                that.$dialog.message.success(that.$i18n.t("t_toast_login"), {
+                vm.$dialog.message.success(vm.$i18n.t("t_toast_login"), {
                   position: "top-right"
                 });
+
+                // Reload some global datas from the "mounted" functions etc.
+                vm.$router.go(0);
               }
-              that.querySent = false;
+              vm.querySent = false;
             })
             .catch(function(exception) {
-              that.querySent = false;
-              handleNetworkErr(exception, that);
+              vm.querySent = false;
+              handleNetworkErr(exception, vm);
             });
         })
         .catch(function(exception) {
-          that.querySent = false;
-          handleNetworkErr(exception, that);
+          vm.querySent = false;
+          handleNetworkErr(exception, vm);
         });
     }
   }

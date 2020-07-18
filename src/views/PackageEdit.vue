@@ -1,5 +1,5 @@
 <template>
-  <v-container style="max-width:1280px">
+  <narrow-container>
     <v-tabs>
       <v-tab href="#tab-1">{{ $t("t_category_info") }}</v-tab>
       <v-tab href="#tab-2" v-if="packID >= 1">{{
@@ -124,8 +124,11 @@
               $t("f_pack_thumbnail")
             }}</v-card-title>
             <v-card-text>
-              <h3 v-html="this.$i18n.t('f_pack_thumbnail_tip')"></h3>
-              <v-row>
+              <v-btn color="primarylight" class="mt-2" @click="hostImage">
+                <v-icon class="mr-2">mdi-upload</v-icon>
+                {{ $t("f_pack_thumbnail_host") }}
+              </v-btn>
+              <v-row class="mt-3">
                 <v-col cols="12" sm="6" class="pb-0 pt-0">
                   <v-text-field
                     v-model="pack.Thumbnail"
@@ -167,18 +170,7 @@
         </v-form>
       </v-tab-item>
       <v-tab-item value="tab-2">
-        <codemirror
-          v-model="pack.Description"
-          :options="{
-            mode: 'htmlmixed',
-            tabSize: 2,
-            viewportMargin: Infinity,
-            lineNumbers: true,
-            line: true,
-            lineWrapping: true
-          }"
-          class="mt-4"
-        ></codemirror>
+        <html-editor :html.sync="pack.Description"></html-editor>
         <v-btn
           color="success"
           large
@@ -191,38 +183,32 @@
         </v-btn>
       </v-tab-item>
       <v-tab-item value="tab-3" class="pt-4">
-        <file-list v-model="pack"></file-list>
+        <file-list v-model="pack.Files" :newFilePackageID="pack.ID"></file-list>
       </v-tab-item>
     </v-tabs>
-  </v-container>
+  </narrow-container>
 </template>
 
-<style>
-.v-tabs-items {
-  height: 100% !important;
-}
-.CodeMirror {
-  border: 1px solid #aaa;
-  height: auto;
-}
-.CodeMirror-wrap pre {
-  word-break: break-word;
-}
-</style>
-
 <script>
+import { uploadImage } from "../utils/ImgChr.js";
 import { handleNetworkErr } from "../utils/ErrorHelper.js";
 import { EventBus } from "../utils/EventBus.js";
-import { codemirror } from "vue-codemirror-lite";
-require("codemirror/mode/htmlmixed/htmlmixed.js");
-var urlRegex = /^(?:(?:(?:https?):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)(?::\d{2,5})?(?:[/?#]\S*)?$/i;
+function isURL(str) {
+  var url = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|" + // domain name
+    "((\\d{1,3}\\.){3}\\d{1,3}))" + // ip (v4) address
+    "(\\:\\d+)?(\\/[-a-z\\d%_.~+ ]*)*" + //port
+    "(\\?[;&amp;a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  );
+  return str.length < 2083 && url.test(str);
+}
 var emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 var packNameRegex = /^[a-zA-Z0-9- ]*$/;
 var englishRegex = /^[\s\w\d\x21-\x2f\x3a-\x40\x5b-\x60\x7b-\x7e]*$/;
 export default {
-  components: {
-    codemirror
-  },
   data: () => ({
     packID: 0,
     formValid: false,
@@ -241,72 +227,73 @@ export default {
     submitForm() {
       this.$refs.editForm.validate();
       if (!this.formValid) return;
-      if (!this.pack.Thumbnail) delete this.pack.ThumbnailLQ;
+      if (!this.pack.Thumbnail) this.pack.ThumbnailLQ = "";
       if (String(this.pack.Name.Local).match(englishRegex))
         this.pack.Name.English = "";
-      if (String(this.pack.Author.Name.Local).match(englishRegex))
+      if (
+        !!this.pack.Author.Name &&
+        String(this.pack.Author.Name.Local).match(englishRegex)
+      )
         this.pack.Author.Name.English = "";
-      if (!this.isRepost) this.pack.Author = {};
+      if (!this.isRepost) this.pack.Author = null;
       // Shrink request size by removing unnecessery fields
       delete this.pack.Description;
       delete this.pack.Uploader;
       delete this.pack.Files;
-      var that = this;
+      var vm = this;
       if (this.packID < 1) {
         this.$http
           .put(this.$apiRootURL + "/packages", this.pack)
           .then(function(responseA) {
-            that.$router.push("/package/edit/" + responseA.data.ID);
-            that.$store.commit("packListUpdate", that.pack);
-            that.$dialog.message.success(
-              that.$i18n.t("t_toast_created_then_edit"),
+            vm.$router.push("/package/edit/" + responseA.data.ID);
+            vm.$dialog.message.success(
+              vm.$i18n.t("t_toast_created_then_edit"),
               {
                 position: "top-right"
               }
             );
           })
           .catch(function(exception) {
-            handleNetworkErr(exception, that);
+            handleNetworkErr(exception, vm);
           });
       } else {
         this.$http
           .post(this.$apiRootURL + "/packages/" + this.packID, this.pack)
           .then(function(responseA) {
-            if (responseA.data.ID != that.packID) {
-              that.$router.push("/package/edit/" + responseA.data.ID);
+            if (responseA.data.ID != vm.packID) {
+              vm.$router.push("/package/edit/" + responseA.data.ID);
             }
-            that.pack = responseA.data;
-            that.ensureModelBind();
-            that.$store.commit("packListUpdate", that.pack);
-            that.$dialog.message.success(that.$i18n.t("t_toast_saved"), {
+            vm.pack = responseA.data;
+            vm.ensureModelBind();
+            vm.$dialog.message.success(vm.$i18n.t("t_toast_saved"), {
               position: "top-right"
             });
           })
           .catch(function(exception) {
-            handleNetworkErr(exception, that);
+            handleNetworkErr(exception, vm);
           });
       }
     },
     submitDescription() {
       var payload = { Description: this.pack.Description };
-      var that = this;
+      var vm = this;
       if (this.packID >= 1) {
         this.$http
           .post(this.$apiRootURL + "/packages/" + this.packID, payload)
           .then(function(responseA) {
-            that.pack = responseA.data;
-            that.$store.commit("packListUpdate", that.pack);
-            that.$dialog.message.success(that.$i18n.t("t_toast_saved"), {
+            vm.pack = responseA.data;
+            vm.ensureModelBind();
+            vm.$dialog.message.success(vm.$i18n.t("t_toast_saved"), {
               position: "top-right"
             });
           })
           .catch(function(exception) {
-            handleNetworkErr(exception, that);
+            handleNetworkErr(exception, vm);
           });
       }
     },
     removePackage() {
-      var that = this;
+      var vm = this;
       if (this.packID >= 1) {
         this.$dialog
           .confirm({
@@ -315,41 +302,59 @@ export default {
           })
           .then(res => {
             if (res) {
-              that.$http
-                .delete(that.$apiRootURL + "/packages/" + that.packID)
+              vm.$http
+                .delete(vm.$apiRootURL + "/packages/" + vm.packID)
                 .then(function() {
-                  that.$store.commit("packListRemove", that.packID);
-                  that.$router.push("/package/list");
-                  that.$dialog.message.warning(
-                    that.$i18n.t("t_toast_removed"),
-                    {
-                      position: "top-right"
-                    }
-                  );
+                  vm.$router.push("/package/list");
+                  vm.$dialog.message.warning(vm.$i18n.t("t_toast_removed"), {
+                    position: "top-right"
+                  });
                 })
                 .catch(function(exception) {
-                  handleNetworkErr(exception, that);
+                  handleNetworkErr(exception, vm);
                 });
             }
           });
       }
     },
+    hostImage() {
+      var fileSelector = document.createElement("input");
+      var vm = this;
+      fileSelector.type = "file";
+      fileSelector.onchange = e => {
+        var file = e.target.files[0];
+        this.$dialog.message.warning(this.$i18n.t("t_toast_uploading"), {
+          position: "top-right"
+        });
+        uploadImage(this, file)
+          .then(function(result) {
+            vm.pack.Thumbnail = result.full_url;
+            vm.pack.ThumbnailLQ = result.thumb_url;
+            vm.$dialog.message.success(vm.$i18n.t("t_toast_done"), {
+              position: "top-right"
+            });
+          })
+          .catch(function(ex) {
+            handleNetworkErr(ex, vm);
+          });
+      };
+      fileSelector.click();
+    },
     fetchPackage(paramID) {
       if (paramID && paramID == parseInt(paramID, 10)) {
         EventBus.$emit("setOverlay", "loading");
-        var that = this;
+        var vm = this;
         this.$http
           .get(this.$apiRootURL + "/packages/" + paramID)
           .then(function(responseA) {
-            that.pack = responseA.data;
-            that.packID = responseA.data.ID;
-            that.isRepost = !!responseA.data.Author;
-            that.ensureModelBind();
-            that.$store.commit("packListUpdate", that.pack);
+            vm.pack = responseA.data;
+            vm.packID = responseA.data.ID;
+            vm.isRepost = !!responseA.data.Author;
+            vm.ensureModelBind();
             EventBus.$emit("setOverlay", "");
           })
           .catch(function(exception) {
-            handleNetworkErr(exception, that, "overlay");
+            handleNetworkErr(exception, vm, "overlay");
           });
       } else {
         this.pack = {};
@@ -365,6 +370,9 @@ export default {
         this.$set(this.pack, "Author", {});
         this.$set(this.pack.Author, "Name", {});
       }
+      // Get the watchers ready, or the text fields will not update when hosting an image
+      if (!this.pack.Thumbnail) this.$set(this.pack, "Thumbnail", "");
+      if (!this.pack.ThumbnailLQ) this.$set(this.pack, "ThumbnailLQ", "");
     },
     r_required(v) {
       return !!v || this.$i18n.t("e_required");
@@ -373,7 +381,7 @@ export default {
       return !v || !!String(v).match(emailRegex) || this.$i18n.t("e_email_bad");
     },
     r_url(v) {
-      return !v || !!String(v).match(urlRegex) || this.$i18n.t("e_url_bad");
+      return !v || isURL(String(v)) || this.$i18n.t("e_url_bad");
     },
     r_trim(v) {
       return String(v) == String(v).trim() || this.$i18n.t("e_str_trim");
