@@ -373,6 +373,7 @@ export default {
       // Get the watchers ready, or the text fields will not update when hosting an image
       if (!this.pack.Thumbnail) this.$set(this.pack, "Thumbnail", "");
       if (!this.pack.ThumbnailLQ) this.$set(this.pack, "ThumbnailLQ", "");
+      if (!this.pack.Files) this.$set(this.pack, "Files", []);
     },
     r_required(v) {
       return !!v || this.$i18n.t("e_required");

@@ -80,9 +80,7 @@ export default {
                 vm.$dialog.message.success(vm.$i18n.t("t_toast_login"), {
                   position: "top-right"
                 });
-
-                // Reload some global datas from the "mounted" functions etc.
-                vm.$router.go(0);
+                EventBus.$emit("reloadSidebar");
               }
               vm.querySent = false;
             })

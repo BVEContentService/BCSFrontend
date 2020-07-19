@@ -284,19 +284,28 @@ export default {
     toggleFileValidation() {
       var that = this;
       if (this.file.ID >= 1) {
-        this.$http
-          .post(this.$apiRootURL + "/files/" + this.file.ID, {
-            Validated: !this.file.Validated
+        this.$dialog
+          .confirm({
+            text: this.$i18n.t("t_validate_warn"),
+            title: this.$i18n.t("t_validate_warn_title")
           })
-          .then(function(response) {
-            that.updateCallback(response.data);
-            that.updateFieldFromModel(response.data);
-            that.$dialog.message.success(that.$i18n.t("t_toast_saved"), {
-              position: "top-right"
-            });
-          })
-          .catch(function(exception) {
-            handleNetworkErr(exception, that);
+          .then(res => {
+            if (res) {
+              this.$http
+                .post(this.$apiRootURL + "/files/" + this.file.ID, {
+                  Validated: !this.file.Validated
+                })
+                .then(function(response) {
+                  that.updateCallback(response.data);
+                  that.updateFieldFromModel(response.data);
+                  that.$dialog.message.success(that.$i18n.t("t_toast_saved"), {
+                    position: "top-right"
+                  });
+                })
+                .catch(function(exception) {
+                  handleNetworkErr(exception, that);
+                });
+            }
           });
       }
     },

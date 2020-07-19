@@ -1,4 +1,5 @@
 # BCS Frontend
+The Frontend of the console for BCS.
 
 ## Project setup
 ```

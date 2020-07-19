@@ -5,24 +5,22 @@
       :state="disablePager ? 'loading' : ''"
     ></information-overlay>
     <v-row>
-      <v-col cols="2" md="1" class="pb-0">
+      <div class="pb-0 ma-5 mb-0 mt-3 d-inline-block">
         <v-btn color="success" link to="/package/edit">
           <v-icon class="mr-3">mdi-pencil</v-icon>
           {{ $t("l_pack_create") }}
         </v-btn>
-      </v-col>
-      <v-col cols="2" md="1" class="text-right pb-0">
-        {{ $t("f_file_platform") }}
-      </v-col>
-      <v-col cols="10" sm="4" md="4" lg="2" class="pt-2 pb-0">
+      </div>
+      <div class="pb-0 ma-5 mb-0 d-inline-block">
         <v-select
           class="pt-0 mt-0"
           v-model="filter_platform"
+          :label="this.$i18n.t('f_file_platform')"
           :items="platformItems"
           item-text="text"
           item-value="value"
         ></v-select>
-      </v-col>
+      </div>
     </v-row>
     <paginated-list
       tag="package-list-element"

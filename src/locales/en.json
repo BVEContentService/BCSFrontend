@@ -150,9 +150,12 @@
 
   "t_remove_warn": "Are you sure you want to remove this item? This could never be undone.",
   "t_remove_warn_title": "Confirm Removal",
+  "t_validate_warn": "Are you sure? For your information, It is not recommended to revalidated a file within 24 hours after its invalidation.",
+  "t_validate_warn_title": "Confirm Toogle Validation",
 
   "t_filter_all": "All",
   "t_filter_empty": "No resource matches this criteria.",
+  "t_user_no_pack": "This user did not upload any package.",
 
   "t_user_register": "Register Account",
   "t_user_activate": "Activate Account",

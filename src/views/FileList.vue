@@ -1,22 +1,20 @@
 <template>
   <narrow-container>
     <v-row>
-      <v-col cols="2" md="1" class="text-right pb-0">
-        {{ $t("f_file_platform") }}
-      </v-col>
-      <v-col cols="10" sm="4" md="4" lg="2" class="pt-2 pb-0">
+      <div class="pb-0 ma-5 mb-0 d-inline-block">
         <v-select
           class="pt-0 mt-0"
           v-model="filter_platform"
+          :label="this.$i18n.t('f_file_platform')"
           :items="platformItems"
           item-text="text"
           item-value="value"
         ></v-select>
-      </v-col>
-      <v-col cols="2" md="1" class="text-right pb-0">
-        {{ $t("f_file_validation") }}
-      </v-col>
-      <v-col cols="10" sm="4" md="4" lg="2" class="pt-3 pb-0">
+      </div>
+      <div class="pb-0 ma-5 mt-1 mb-0 d-inline-block">
+        <p class="mb-0">
+          <small>{{ $t("f_file_validation") }}</small>
+        </p>
         <v-radio-group v-model="filter_validated" row class="pt-0 mt-0">
           <v-radio
             class="mr-0"
@@ -26,7 +24,7 @@
             :color="['info', 'success', 'error'][n - 1]"
           ></v-radio>
         </v-radio-group>
-      </v-col>
+      </div>
     </v-row>
     <v-row>
       <v-col cols="12">

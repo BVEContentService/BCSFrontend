@@ -190,25 +190,28 @@ export default {
     },
     toggleEnglishName() {
       this.$store.commit("toggleEnglishName");
+    },
+    reloadSidebar() {
+      if (
+        this.$store.state.profile &&
+        this.$store.state.profile.Privilege >= 10
+      ) {
+        this.$http
+          .head(this.$apiRootURL + "/files?validated=false")
+          .then(response => {
+            this.admin_invalidPackCount = parseInt(
+              response.headers["content-range"].split("/")[1]
+            );
+          })
+          .catch(exception => {
+            handleNetworkErr(exception, this);
+          });
+      }
     }
   },
   mounted: function() {
-    var vm = this;
-    if (
-      this.$store.state.profile &&
-      this.$store.state.profile.Privilege >= 10
-    ) {
-      this.$http
-        .head(this.$apiRootURL + "/files?validated=false")
-        .then(function(response) {
-          vm.admin_invalidPackCount = parseInt(
-            response.headers["content-range"].split("/")[1]
-          );
-        })
-        .catch(function(exception) {
-          handleNetworkErr(exception, vm);
-        });
-    }
+    this.reloadSidebar();
+    EventBus.$on("reloadSidebar", this.reloadSidebar);
   }
 };
 </script>
