@@ -54,6 +54,14 @@
   width: 100%;
   margin-left: 200px;
 }
+@media screen and (max-width: 500px) {
+  .thumbnail {
+    width: 100px;
+  }
+  .card-content {
+    margin-left: 100px;
+  }
+}
 .card-col {
   padding-right: 0;
   padding-top: 0;

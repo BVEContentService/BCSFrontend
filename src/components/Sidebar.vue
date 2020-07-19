@@ -1,6 +1,6 @@
 <template>
   <v-list>
-    <v-list-item link @click="$router.go(-1)">
+    <v-list-item link @click="$router.go(-1)" class="d-none d-lg-flex">
       <v-list-item-action>
         <v-icon>mdi-arrow-left</v-icon>
       </v-list-item-action>
@@ -8,7 +8,7 @@
         <v-list-item-title>{{ $t("t_back") }}</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
-    <v-divider></v-divider>
+    <v-divider class="d-none d-lg-flex"></v-divider>
 
     <list-item-group
       v-if="!profile"
@@ -87,6 +87,29 @@
       </v-list-item-action>
       <v-list-item-content>
         <v-list-item-title>English Names</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+
+    <v-divider></v-divider>
+    <v-list-item link to="/debug">
+      <v-list-item-action>
+        <v-badge
+          v-if="
+            $store.state.errors.length + $store.state.backendExceptions.length >
+              0
+          "
+          :content="
+            $store.state.errors.length + $store.state.backendExceptions.length
+          "
+          color="error"
+          overlap
+        >
+          <v-icon color="error">mdi-bug</v-icon>
+        </v-badge>
+        <v-icon v-else>mdi-bug</v-icon>
+      </v-list-item-action>
+      <v-list-item-content>
+        <v-list-item-title>Error Tracing</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
   </v-list>

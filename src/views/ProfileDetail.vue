@@ -6,18 +6,24 @@
           <img class="profile-img" :src="gravatarURL" style="max-width:240px" />
           <edit-fab v-if="canEdit" :to="editURL"></edit-fab>
         </div>
-        <h1 class="mb-4 mt-2">{{ displayName }}</h1>
+        <h1 class="mb-4 mt-2" style="word-break: break-all">
+          {{ displayName }}
+        </h1>
         <p class="mb-1">
-          <v-icon class="mr-2">mdi-account</v-icon>
-          <em>{{ profile.Username }}</em>
+          <v-icon class="pr-2 d-table-cell">mdi-account</v-icon>
+          <em class="d-table-cell">{{ profile.Username }}</em>
         </p>
         <p v-if="profile.Email" class="mb-1">
-          <v-icon class="mr-2">mdi-email</v-icon>
-          <a :href="'mailto:' + profile.Email">{{ profile.Email }}</a>
+          <v-icon class="pr-2 d-table-cell">mdi-email</v-icon>
+          <a class="d-table-cell" :href="'mailto:' + profile.Email">{{
+            profile.Email
+          }}</a>
         </p>
         <p v-if="profile.Homepage" class="mb-1">
-          <v-icon class="mr-2">mdi-earth</v-icon>
-          <a :href="profile.Homepage">{{ profile.Homepage }}</a>
+          <v-icon class="pr-2 d-table-cell">mdi-earth</v-icon>
+          <a class="d-table-cell" :href="profile.Homepage">{{
+            profile.Homepage
+          }}</a>
         </p>
       </div>
       <div class="col2">
@@ -28,7 +34,12 @@
           :items="profile.Packages"
           :totalLength="profile.Packages.length"
           :switchCallback="updatePackagePager"
-        ></paginated-list>
+        >
+          <template v-slot:empty>
+            <v-icon large class="mr-4 ml-3">mdi-flask-empty-outline</v-icon>
+            <span>{{ $t("t_user_no_pack") }}</span>
+          </template>
+        </paginated-list>
       </div>
     </div>
   </narrow-container>
@@ -37,6 +48,9 @@
 <style scoped>
 .col1 {
   width: 260px;
+}
+.col1 p {
+  word-break: break-all;
 }
 .col2 {
   flex-grow: 1;

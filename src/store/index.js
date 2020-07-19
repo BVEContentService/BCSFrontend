@@ -21,7 +21,11 @@ export default new Vuex.Store({
     token: localStorage.getItem("JWT_TOKEN") || "",
     profile: JSON.parse(localStorage.getItem("PROFILE")) || null,
     lang: window.localStorage.getItem("LANGUAGE") || tryLanguages(),
-    englishName: false
+    englishName: false,
+
+    /* Debug Variables */
+    errors: [],
+    backendExceptions: []
   },
   mutations: {
     login(state, payload) {
@@ -49,6 +53,12 @@ export default new Vuex.Store({
     onLangChanged(state, payload) {
       window.localStorage.setItem("LANGUAGE", payload);
       state.lang = payload;
+    },
+    onError(state, payload) {
+      state.errors.push(payload);
+    },
+    onBackendException(state, payload) {
+      state.backendExceptions.push(payload);
     }
   }
 });

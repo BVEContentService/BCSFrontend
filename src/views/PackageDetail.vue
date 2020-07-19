@@ -29,8 +29,8 @@
             ></platform-chip>
             <table>
               <tr v-if="pkg.Author">
-                <td>{{ $t("t_author") }}</td>
-                <td>
+                <td class="pr-3">{{ $t("t_author") }}</td>
+                <td class="pr-1 text-right">
                   <a
                     v-if="pkg.Author.Email"
                     :href="'mailto:' + pkg.Author.Email"
@@ -46,8 +46,10 @@
                 <td>{{ s3(pkg.Author.Name) }}</td>
               </tr>
               <tr>
-                <td>{{ !!pkg.Author ? $t("t_uploader") : $t("t_author") }}</td>
-                <td>
+                <td class="pr-3">
+                  {{ !!pkg.Author ? $t("t_uploader") : $t("t_author") }}
+                </td>
+                <td class="pr-1 text-right">
                   <a
                     v-if="pkg.Uploader.Email"
                     :href="'mailto:' + pkg.Uploader.Email"
@@ -79,15 +81,12 @@
     </div>
     <narrow-container>
       <v-row class="pl-4 pr-4 mt-2">
-        <v-expansion-panels>
+        <v-expansion-panels dark>
           <v-expansion-panel>
-            <v-expansion-panel-header color="primarylight"
-              >(Temporary) Detail Info Display
+            <v-expansion-panel-header class="construction pb-1 pt-1"
+              ><h2>Detail Info Display (Under Construction)</h2>
             </v-expansion-panel-header>
-            <v-expansion-panel-content
-              ><p class="mt-2">
-                This is ugly. Will try to make it prettier later.
-              </p>
+            <v-expansion-panel-content>
               <div v-html="obj2table(pkg)"></div>
             </v-expansion-panel-content>
           </v-expansion-panel>

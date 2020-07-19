@@ -53,7 +53,7 @@ axios.interceptors.request.use(
 Vue.prototype.$http = axios;
 Vue.prototype.$apiRootURL = process.env.VUE_APP_API_ROOT_URL;
 
-new Vue({
+var vm = new Vue({
   router,
   vuetify,
   i18n,
@@ -76,3 +76,7 @@ console.log(
   "It could allow them to take over your account, or do many other harmful things.",
   "If you don't understand what exactly you are doing here, you should close this window without doing anything."
 );
+
+window.onerror = function(error, url, line) {
+  vm.$store.commit("onError", { error: error, url: url, line: line });
+};

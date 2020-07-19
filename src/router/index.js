@@ -11,6 +11,7 @@ import FileList from "../views/FileList.vue";
 import UserRegister from "../views/UserRegister.vue";
 import UserActivate from "../views/UserActivate.vue";
 import UserChangePassword from "../views/UserChangePassword.vue";
+import Debug from "../views/Debug.vue";
 
 Vue.use(VueRouter);
 
@@ -69,6 +70,11 @@ const routes = [
     path: "/file/list",
     name: "File list",
     component: FileList
+  },
+  {
+    path: "/debug",
+    name: "Debug",
+    component: Debug
   }
 ];
 

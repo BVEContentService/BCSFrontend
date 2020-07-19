@@ -17,8 +17,10 @@
     <v-row dense>
       <slot></slot>
       <v-col v-if="totalLength == 0">
-        <v-icon large class="mr-4 ml-3">mdi-alert-circle</v-icon>
-        <span>{{ $t("t_filter_empty") }}</span>
+        <slot name="empty">
+          <v-icon large class="mr-4 ml-3">mdi-alert-circle</v-icon>
+          <span>{{ $t("t_filter_empty") }}</span>
+        </slot>
       </v-col>
       <template v-if="items && items.length">
         <v-col v-for="(item, i) in items" :key="i" cols="12">
