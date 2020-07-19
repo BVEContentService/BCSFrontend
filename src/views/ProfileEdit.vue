@@ -123,46 +123,44 @@ export default {
       // Shrink request size by removing unnecessery fields
       delete this.profile.Description;
       delete this.profile.Packages;
-      var vm = this;
       this.$http
         .post(this.$apiRootURL + "/uploaders/" + this.profile.ID, this.profile)
-        .then(function(responseA) {
-          vm.profile = responseA.data;
-          vm.ensureModelBind();
+        .then(response => {
+          this.profile = response.data;
+          this.ensureModelBind();
           if (
-            vm.$store.state.profile &&
-            vm.$store.state.profile.ID == vm.profile.ID
+            this.$store.state.profile &&
+            this.$store.state.profile.ID == this.profile.ID
           ) {
             // Create a deep copy without the listeners.
             // Or the username in the sidebar will change when the fields are being edited.
             // It does feel funny, but it is not what I wanted.
-            vm.$store.commit(
+            this.$store.commit(
               "profileUpdate",
-              JSON.parse(JSON.stringify(vm.profile))
+              JSON.parse(JSON.stringify(this.profile))
             );
           }
-          vm.$dialog.message.success(vm.$i18n.t("t_toast_saved"), {
+          this.$dialog.message.success(this.$i18n.t("t_toast_saved"), {
             position: "top-right"
           });
         })
-        .catch(function(exception) {
-          handleNetworkErr(exception, vm);
+        .catch(exception => {
+          handleNetworkErr(exception, this);
         });
     },
     submitDescription() {
       var payload = { Description: this.pack.Description };
-      var vm = this;
       this.$http
         .post(this.$apiRootURL + "/uploaders/" + this.profile.ID, payload)
-        .then(function(responseA) {
-          vm.profile = responseA.data;
-          vm.ensureModelBind();
-          vm.$dialog.message.success(vm.$i18n.t("t_toast_saved"), {
+        .then(response => {
+          this.profile = response.data;
+          this.ensureModelBind();
+          this.$dialog.message.success(this.$i18n.t("t_toast_saved"), {
             position: "top-right"
           });
         })
-        .catch(function(exception) {
-          handleNetworkErr(exception, vm);
+        .catch(exception => {
+          handleNetworkErr(exception, this);
         });
     },
     fetchProfile(paramID) {
@@ -185,15 +183,14 @@ export default {
         this.$router.push("/");
         return;
       }
-      var vm = this;
       this.$http
         .get(this.$apiRootURL + "/uploaders/" + uid)
-        .then(function(responseB) {
-          vm.profile = responseB.data;
+        .then(response => {
+          this.profile = response.data;
           EventBus.$emit("setOverlay", "");
         })
-        .catch(function(exception) {
-          handleNetworkErr(exception, vm, "overlay");
+        .catch(exception => {
+          handleNetworkErr(exception, this, "overlay");
         });
     },
     ensureModelBind() {

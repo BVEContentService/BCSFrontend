@@ -122,29 +122,28 @@ export default {
       } else if (validated !== null) {
         requestURL += "?validated=" + validated;
       }
-      var vm = this;
       this.$http
         .get(requestURL, {
           headers: {
             Range: "files=" + rangeL + "-" + rangeR
           }
         })
-        .then(function(response) {
-          vm.files = response.data;
-          vm.totalLength = parseInt(
+        .then(response => {
+          this.files = response.data;
+          this.totalLength = parseInt(
             response.headers["content-range"].split("/")[1]
           );
-          if (!vm.files) vm.files = [];
-          vm.disablePager = false;
+          if (!this.files) this.files = [];
+          this.disablePager = false;
         })
-        .catch(function(exception) {
-          vm.disablePager = false;
+        .catch(exception => {
+          this.disablePager = false;
           // Show as dialog if occured on switching pager
           // Show as overlay if occured on first entry
           handleNetworkErr(
             exception,
-            vm,
-            vm.files.length ? "dialog" : "overlay"
+            this,
+            this.files.length ? "dialog" : "overlay"
           );
         });
     }

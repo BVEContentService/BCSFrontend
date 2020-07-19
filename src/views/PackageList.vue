@@ -73,7 +73,6 @@ export default {
       this._pager_L = rangeL;
       this._pager_R = rangeR;
       this.disablePager = true;
-      var vm = this;
       var requestURL = this.$apiRootURL + "/packages";
       if (platform) {
         requestURL += "?platform=" + platform;
@@ -84,21 +83,21 @@ export default {
             Range: "packages=" + rangeL + "-" + rangeR
           }
         })
-        .then(function(response) {
-          vm.disablePager = false;
-          vm.offsetPackages = response.data;
-          vm.totalLength = parseInt(
+        .then(response => {
+          this.disablePager = false;
+          this.offsetPackages = response.data;
+          this.totalLength = parseInt(
             response.headers["content-range"].split("/")[1]
           );
         })
-        .catch(function(exception) {
-          vm.disablePager = false;
+        .catch(exception => {
+          this.disablePager = false;
           // Show as dialog if occured on switching pager
           // Show as overlay if occured on first entry
           handleNetworkErr(
             exception,
-            vm,
-            vm.offsetPackages.length ? "dialog" : "overlay"
+            this,
+            this.offsetPackages.length ? "dialog" : "overlay"
           );
         });
     }

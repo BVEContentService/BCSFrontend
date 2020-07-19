@@ -55,43 +55,42 @@ export default {
       };
       if (credentials.username.trim() == "") return;
       this.querySent = true;
-      var vm = this;
       this.$http
         .post(this.$apiRootURL + "/auth/login", credentials)
-        .then(function(responseA) {
+        .then(responseA => {
           var uid = require("jsonwebtoken").decode(responseA.data.token).uid;
-          vm.$http
-            .get(vm.$apiRootURL + "/uploaders/" + uid)
-            .then(function(responseB) {
+          this.$http
+            .get(this.$apiRootURL + "/uploaders/" + uid)
+            .then(responseB => {
               if (responseB.data.Description) delete responseB.data.Description;
-              vm.$store.commit("login", {
+              this.$store.commit("login", {
                 token: responseA.data.token,
                 profile: responseB.data
               });
               EventBus.$emit("setLoginDialog", false);
-              if (vm.reason == "badToken") {
-                vm.$dialog.message.warning(
-                  vm.$i18n.t("t_toast_login_resubmit"),
+              if (this.reason == "badToken") {
+                this.$dialog.message.warning(
+                  this.$i18n.t("t_toast_login_resubmit"),
                   {
                     position: "top-right"
                   }
                 );
               } else {
-                vm.$dialog.message.success(vm.$i18n.t("t_toast_login"), {
+                this.$dialog.message.success(this.$i18n.t("t_toast_login"), {
                   position: "top-right"
                 });
                 EventBus.$emit("reloadSidebar");
               }
-              vm.querySent = false;
+              this.querySent = false;
             })
-            .catch(function(exception) {
-              vm.querySent = false;
-              handleNetworkErr(exception, vm);
+            .catch(exception => {
+              this.querySent = false;
+              handleNetworkErr(exception, this);
             });
         })
-        .catch(function(exception) {
-          vm.querySent = false;
-          handleNetworkErr(exception, vm);
+        .catch(exception => {
+          this.querySent = false;
+          handleNetworkErr(exception, this);
         });
     }
   }

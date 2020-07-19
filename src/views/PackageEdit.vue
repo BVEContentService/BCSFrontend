@@ -240,60 +240,57 @@ export default {
       delete this.pack.Description;
       delete this.pack.Uploader;
       delete this.pack.Files;
-      var vm = this;
       if (this.packID < 1) {
         this.$http
           .put(this.$apiRootURL + "/packages", this.pack)
-          .then(function(responseA) {
-            vm.$router.push("/package/edit/" + responseA.data.ID);
-            vm.$dialog.message.success(
-              vm.$i18n.t("t_toast_created_then_edit"),
+          .then(response => {
+            this.$router.push("/package/edit/" + response.data.ID);
+            this.$dialog.message.success(
+              this.$i18n.t("t_toast_created_then_edit"),
               {
                 position: "top-right"
               }
             );
           })
-          .catch(function(exception) {
-            handleNetworkErr(exception, vm);
+          .catch(exception => {
+            handleNetworkErr(exception, this);
           });
       } else {
         this.$http
           .post(this.$apiRootURL + "/packages/" + this.packID, this.pack)
-          .then(function(responseA) {
-            if (responseA.data.ID != vm.packID) {
-              vm.$router.push("/package/edit/" + responseA.data.ID);
+          .then(response => {
+            if (response.data.ID != this.packID) {
+              this.$router.push("/package/edit/" + response.data.ID);
             }
-            vm.pack = responseA.data;
-            vm.ensureModelBind();
-            vm.$dialog.message.success(vm.$i18n.t("t_toast_saved"), {
+            this.pack = response.data;
+            this.ensureModelBind();
+            this.$dialog.message.success(this.$i18n.t("t_toast_saved"), {
               position: "top-right"
             });
           })
-          .catch(function(exception) {
-            handleNetworkErr(exception, vm);
+          .catch(exception => {
+            handleNetworkErr(exception, this);
           });
       }
     },
     submitDescription() {
       var payload = { Description: this.pack.Description };
-      var vm = this;
       if (this.packID >= 1) {
         this.$http
           .post(this.$apiRootURL + "/packages/" + this.packID, payload)
-          .then(function(responseA) {
-            vm.pack = responseA.data;
-            vm.ensureModelBind();
-            vm.$dialog.message.success(vm.$i18n.t("t_toast_saved"), {
+          .then(response => {
+            this.pack = response.data;
+            this.ensureModelBind();
+            this.$dialog.message.success(this.$i18n.t("t_toast_saved"), {
               position: "top-right"
             });
           })
-          .catch(function(exception) {
-            handleNetworkErr(exception, vm);
+          .catch(exception => {
+            handleNetworkErr(exception, this);
           });
       }
     },
     removePackage() {
-      var vm = this;
       if (this.packID >= 1) {
         this.$dialog
           .confirm({
@@ -302,16 +299,19 @@ export default {
           })
           .then(res => {
             if (res) {
-              vm.$http
-                .delete(vm.$apiRootURL + "/packages/" + vm.packID)
-                .then(function() {
-                  vm.$router.push("/package/list");
-                  vm.$dialog.message.warning(vm.$i18n.t("t_toast_removed"), {
-                    position: "top-right"
-                  });
+              this.$http
+                .delete(this.$apiRootURL + "/packages/" + this.packID)
+                .then(() => {
+                  this.$router.push("/package/list");
+                  this.$dialog.message.warning(
+                    this.$i18n.t("t_toast_removed"),
+                    {
+                      position: "top-right"
+                    }
+                  );
                 })
-                .catch(function(exception) {
-                  handleNetworkErr(exception, vm);
+                .catch(exception => {
+                  handleNetworkErr(exception, this);
                 });
             }
           });
@@ -319,7 +319,6 @@ export default {
     },
     hostImage() {
       var fileSelector = document.createElement("input");
-      var vm = this;
       fileSelector.type = "file";
       fileSelector.onchange = e => {
         var file = e.target.files[0];
@@ -327,15 +326,15 @@ export default {
           position: "top-right"
         });
         uploadImage(this, file)
-          .then(function(result) {
-            vm.pack.Thumbnail = result.full_url;
-            vm.pack.ThumbnailLQ = result.thumb_url;
-            vm.$dialog.message.success(vm.$i18n.t("t_toast_done"), {
+          .then(result => {
+            this.pack.Thumbnail = result.full_url;
+            this.pack.ThumbnailLQ = result.thumb_url;
+            this.$dialog.message.success(this.$i18n.t("t_toast_done"), {
               position: "top-right"
             });
           })
-          .catch(function(ex) {
-            handleNetworkErr(ex, vm);
+          .catch(ex => {
+            handleNetworkErr(ex, this);
           });
       };
       fileSelector.click();
@@ -343,18 +342,17 @@ export default {
     fetchPackage(paramID) {
       if (paramID && paramID == parseInt(paramID, 10)) {
         EventBus.$emit("setOverlay", "loading");
-        var vm = this;
         this.$http
           .get(this.$apiRootURL + "/packages/" + paramID)
-          .then(function(responseA) {
-            vm.pack = responseA.data;
-            vm.packID = responseA.data.ID;
-            vm.isRepost = !!responseA.data.Author;
-            vm.ensureModelBind();
+          .then(response => {
+            this.pack = response.data;
+            this.packID = response.data.ID;
+            this.isRepost = !!response.data.Author;
+            this.ensureModelBind();
             EventBus.$emit("setOverlay", "");
           })
-          .catch(function(exception) {
-            handleNetworkErr(exception, vm, "overlay");
+          .catch(exception => {
+            handleNetworkErr(exception, this, "overlay");
           });
       } else {
         this.pack = {};

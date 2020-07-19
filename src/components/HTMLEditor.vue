@@ -79,9 +79,8 @@ export default {
   },
   methods: {
     updateCodeMirror() {
-      var vm = this;
       setTimeout(() => {
-        vm.$refs.codemirror.codemirror.refresh();
+        this.$refs.codemirror.codemirror.refresh();
       }, 50);
     },
     insertImageFile() {

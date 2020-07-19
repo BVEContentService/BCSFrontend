@@ -157,9 +157,8 @@ export default {
       return this.serviceMap[this.file.Service];
     },
     serviceItems: function() {
-      let that = this;
-      var si = Object.entries(this.serviceMap).map(function(v) {
-        return { value: v[0], text: that.$i18n.t("f_file_s_" + v[0]) };
+      var si = Object.entries(this.serviceMap).map(v => {
+        return { value: v[0], text: this.$i18n.t("f_file_s_" + v[0]) };
       });
       return si;
     },
@@ -170,7 +169,7 @@ export default {
     }
   },
   data: function() {
-    let that = this;
+    let vm = this;
     return {
       formValid: false,
       p1: "",
@@ -183,7 +182,7 @@ export default {
         path: function(v) {
           return (
             (String(v) != "" && String(v)[0] == "/") ||
-            that.$i18n.t("e_relative_path")
+            vm.$i18n.t("e_relative_path")
           );
         }
       }
@@ -224,37 +223,35 @@ export default {
       } else {
         this.file.AuthParam = "";
       }
-      var that = this;
       if (this.file.ID < 1) {
         this.$http
           .put(this.$apiRootURL + "/files", this.file)
-          .then(function(response) {
-            that.createCallback(response.data);
-            that.updateFieldFromModel(response.data);
-            that.$dialog.message.success(that.$i18n.t("t_toast_created"), {
+          .then(response => {
+            this.createCallback(response.data);
+            this.updateFieldFromModel(response.data);
+            this.$dialog.message.success(this.$i18n.t("t_toast_created"), {
               position: "top-right"
             });
           })
-          .catch(function(exception) {
-            handleNetworkErr(exception, that);
+          .catch(exception => {
+            handleNetworkErr(exception, this);
           });
       } else {
         this.$http
           .post(this.$apiRootURL + "/files/" + this.file.ID, this.file)
-          .then(function(response) {
-            that.updateCallback(response.data);
-            that.updateFieldFromModel(response.data);
-            that.$dialog.message.success(that.$i18n.t("t_toast_saved"), {
+          .then(response => {
+            this.updateCallback(response.data);
+            this.updateFieldFromModel(response.data);
+            this.$dialog.message.success(this.$i18n.t("t_toast_saved"), {
               position: "top-right"
             });
           })
-          .catch(function(exception) {
-            handleNetworkErr(exception, that);
+          .catch(exception => {
+            handleNetworkErr(exception, this);
           });
       }
     },
     removeFile() {
-      var that = this;
       if (this.file.ID >= 1) {
         this.$dialog
           .confirm({
@@ -263,26 +260,25 @@ export default {
           })
           .then(res => {
             if (res) {
-              that.$http
-                .delete(that.$apiRootURL + "/files/" + that.file.ID)
-                .then(function() {
-                  that.removeCallback(that.file.ID);
-                  that.$dialog.message.warning(
-                    that.$i18n.t("t_toast_removed"),
+              this.$http
+                .delete(this.$apiRootURL + "/files/" + this.file.ID)
+                .then(() => {
+                  this.removeCallback(this.file.ID);
+                  this.$dialog.message.warning(
+                    this.$i18n.t("t_toast_removed"),
                     {
                       position: "top-right"
                     }
                   );
                 })
-                .catch(function(exception) {
-                  handleNetworkErr(exception, that);
+                .catch(exception => {
+                  handleNetworkErr(exception, this);
                 });
             }
           });
       }
     },
     toggleFileValidation() {
-      var that = this;
       if (this.file.ID >= 1) {
         this.$dialog
           .confirm({
@@ -295,15 +291,15 @@ export default {
                 .post(this.$apiRootURL + "/files/" + this.file.ID, {
                   Validated: !this.file.Validated
                 })
-                .then(function(response) {
-                  that.updateCallback(response.data);
-                  that.updateFieldFromModel(response.data);
-                  that.$dialog.message.success(that.$i18n.t("t_toast_saved"), {
+                .then(response => {
+                  this.updateCallback(response.data);
+                  this.updateFieldFromModel(response.data);
+                  this.$dialog.message.success(this.$i18n.t("t_toast_saved"), {
                     position: "top-right"
                   });
                 })
-                .catch(function(exception) {
-                  handleNetworkErr(exception, that);
+                .catch(exception => {
+                  handleNetworkErr(exception, this);
                 });
             }
           });

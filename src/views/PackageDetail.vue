@@ -157,15 +157,14 @@ export default {
         this.$router.push("/");
         return;
       }
-      var vm = this;
       this.$http
         .get(this.$apiRootURL + "/packages/" + pkgid)
-        .then(function(responseB) {
-          vm.pkg = responseB.data;
+        .then(responseB => {
+          this.pkg = responseB.data;
           EventBus.$emit("setOverlay", "");
         })
-        .catch(function(exception) {
-          handleNetworkErr(exception, vm, "overlay");
+        .catch(exception => {
+          handleNetworkErr(exception, this, "overlay");
         });
     },
     obj2table(obj) {

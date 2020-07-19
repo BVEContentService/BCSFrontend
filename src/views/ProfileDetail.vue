@@ -128,17 +128,16 @@ export default {
         this.$router.push("/");
         return;
       }
-      var that = this;
       this.$http
         .get(this.$apiRootURL + "/uploaders/" + uid)
-        .then(function(responseB) {
-          that.profile = responseB.data;
+        .then(response => {
+          this.profile = response.data;
           // Let the view model attach somewhere
-          if (!that.profile.Packages) that.profile.Packages = [];
+          if (!this.profile.Packages) this.profile.Packages = [];
           EventBus.$emit("setOverlay", "");
         })
-        .catch(function(exception) {
-          handleNetworkErr(exception, that, "overlay");
+        .catch(exception => {
+          handleNetworkErr(exception, this, "overlay");
         });
     },
     updatePackagePager(rangeL, rangeR) {

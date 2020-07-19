@@ -120,52 +120,50 @@ export default {
   methods: {
     submitForm() {
       if (!this.formValid) return;
-      var vm = this;
       this.sending = true;
       this.$http
         .post(this.$apiRootURL + "/auth/activate", this.request)
-        .then(function(responseA) {
+        .then(responseA => {
           var credentials = {
-            username: vm.request.Username,
-            password: vm.request.Password
+            username: this.request.Username,
+            password: this.request.Password
           };
-          vm.$http
-            .post(vm.$apiRootURL + "/auth/login", credentials)
-            .then(function(responseB) {
-              vm.sending = false;
-              vm.sent = true;
-              vm.$store.commit("login", {
+          this.$http
+            .post(this.$apiRootURL + "/auth/login", credentials)
+            .then(responseB => {
+              this.sending = false;
+              this.sent = true;
+              this.$store.commit("login", {
                 token: responseB.data.token,
                 profile: responseA.data
               });
-              vm.$router.push("/profile/edit/");
+              this.$router.push("/profile/edit/");
             })
-            .catch(function(exception) {
-              vm.sending = false;
-              handleNetworkErr(exception, vm);
+            .catch(exception => {
+              this.sending = false;
+              handleNetworkErr(exception, this);
             });
         })
-        .catch(function(exception) {
-          vm.sending = false;
-          handleNetworkErr(exception, vm);
+        .catch(exception => {
+          this.sending = false;
+          handleNetworkErr(exception, this);
         });
     },
     checkToken(token) {
-      let vm = this;
       this.tokenValid = null;
       this.request.Token = this.$route.params.token;
       this.$http
         .post(this.$apiRootURL + "/auth/check_token", {
           Token: token
         })
-        .then(function() {
-          vm.tokenValid = true;
+        .then(() => {
+          this.tokenValid = true;
         })
-        .catch(function(exception) {
+        .catch(exception => {
           if (exception.response && exception.response.data.ErrorCode == 214) {
-            vm.tokenValid = false;
+            this.tokenValid = false;
           } else {
-            handleNetworkErr(exception, vm);
+            handleNetworkErr(exception, this);
           }
         });
     },

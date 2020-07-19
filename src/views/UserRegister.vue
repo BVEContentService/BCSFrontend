@@ -55,20 +55,19 @@ export default {
   }),
   methods: {
     submitForm() {
-      var vm = this;
       this.sending = true;
       this.$http
         .post(this.$apiRootURL + "/auth/register", {
           Email: this.email
         })
-        .then(function(response) {
-          vm.sending = false;
-          vm.sent = true;
-          vm.expiry = response.data.Expiry;
+        .then(response => {
+          this.sending = false;
+          this.sent = true;
+          this.expiry = response.data.Expiry;
         })
-        .catch(function(exception) {
-          vm.sending = false;
-          handleNetworkErr(exception, vm);
+        .catch(exception => {
+          this.sending = false;
+          handleNetworkErr(exception, this);
         });
     },
     r_required(v) {
