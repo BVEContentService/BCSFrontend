@@ -77,7 +77,7 @@ export default {
         .post(this.$apiRootURL + "/auth/change_password", this.request)
         .then(() => {
           this.$dialog.message.success(this.$i18n.t("t_toast_saved"), {
-            position: "top-right"
+            position: "bottom-left"
           });
           this.$router.push("/profile/edit");
         })

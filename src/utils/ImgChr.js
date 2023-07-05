@@ -1,5 +1,32 @@
 export async function uploadImage(vm, file) {
-  const imgChrBaseURL = "https://api.zbx1425.tk:8953/imgchr/";
+  const imgChrBaseURL = "https://storage.zbx1425.cn/img-lsky/api/v1/upload";
+  let formData = new FormData();
+  formData.append("file", file);
+  formData.append("strategy_id", "1");
+  let jsonResponse = await vm.$http({
+    method: "post",
+    url: imgChrBaseURL,
+    data: formData,
+    headers: {
+      Authorization: "NONE"
+    }
+  });
+  if (jsonResponse.data.status) {
+    return {
+      full_url: jsonResponse.data.data.links.url,
+      thumb_url: jsonResponse.data.data.links.thumbnail_url
+    };
+  } else {
+    return {
+      full_url: jsonResponse.data.message,
+      thumb_url: ""
+    };
+  }
+}
+
+/*
+uploadImage(vm, file) {
+  const imgChrBaseURL = "https://hbb.zbx1425.cn:8953/imgchr/";
   let homeResponse = await vm.$http.get(imgChrBaseURL, {
     withCredentials: true
   });
@@ -24,3 +51,4 @@ export async function uploadImage(vm, file) {
     thumb_url: jsonResponse.data.image.thumb.url
   };
 }
+*/

@@ -51,12 +51,22 @@
         >{{ file.Version }}
         <small class="ml-2">{{ platformMap[file.Platform].name }}</small>
         <span
-          v-if="file.NeedValidation && !file.Validated"
+          v-if="file.NeedValidation && !file.Validated && !!file.RejectReason"
+          class="ml-3 text-right"
+        >
+          <span class="d-table-cell"
+            ><v-icon class="mr-1" :dark="platformMap[file.Platform].dark"
+              >mdi-alert-circle</v-icon
+            ><small>文件被退回; 更新可重提交</small></span
+          >
+        </span>
+        <span
+          v-if="file.NeedValidation && !file.Validated && !file.RejectReason"
           class="ml-3 text-right"
         >
           <span class="d-table-cell">{{ $t("t_file_validation_await") }}</span>
           <a
-            href=""
+            :href="documentURL('filevalidation')"
             target="_blank"
             style="color:black"
             class="d-table-cell pl-2 pr-1"
@@ -105,6 +115,7 @@
 
 <script>
 import mapping from "../config/mapping.js";
+import { getExternalDocUrl } from "../utils/DocHelper";
 function versionCompare(v1, v2) {
   var lexicographical = false,
     zeroExtend = true,
@@ -163,10 +174,12 @@ export default {
       newFileModel: {
         ID: 0,
         PackageID: this.newFilePackageID,
-        Platform: "openbve",
-        Size: "114.19 MB",
+        Platform: "hmmsim",
+        Size: "123.45 MB",
         Version: "1.0",
-        Service: "plain"
+        Service: "bcstianjin",
+        URLParam: "",
+        AuthParam: this.$store.state.profile.Email
       }
     };
   },
@@ -178,6 +191,16 @@ export default {
     },
     syncFileCreate(model) {
       this.value.push(model);
+
+      // Reset form
+      this.newFileModel.ID = 0;
+      this.newFileModel.PackageID = this.newFilePackageID;
+      this.newFileModel.Platform = "hmmsim";
+      this.newFileModel.Size = "123.45 MB";
+      this.newFileModel.Version = "1.0";
+      this.newFileModel.Service = "bcstianjin";
+      this.newFileModel.URLParam = "";
+      this.newFileModel.AuthParam = this.$store.state.profile.Email;
     },
     syncFileUpdate(model) {
       for (var i = 0; i < this.value.length; i++) {
@@ -213,6 +236,9 @@ export default {
         }
       }
       return true;
+    },
+    documentURL(topic) {
+      return getExternalDocUrl(this, topic);
     }
   },
   props: ["value", "newFilePackageID", "showFileID"]

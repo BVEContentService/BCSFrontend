@@ -4,9 +4,9 @@
     <v-card link :to="detailURL" :disabled="disabled">
       <div class="d-flex flex-no-wrap thumbnail-container">
         <img :src="thumbnailURL" class="thumbnail" />
-        <div class="card-content">
+        <div class="card-content pb-2">
           <v-card-title class="headline">{{ displayName }}</v-card-title>
-          <v-card-subtitle class="pt-1 pb-2">
+          <v-card-subtitle class="pt-4 pb-2">
             <v-row>
               <v-col cols="12" md="6" lg="5" xl="4" class="card-col">
                 <platform-chip :platforms="item.Platforms"></platform-chip>
@@ -71,6 +71,7 @@
 
 <script>
 import { s3 } from "../utils/String3Helper";
+import { PlaceholderImage } from "../utils/DocHelper";
 export default {
   name: "package-list-element",
   props: ["item", "disabled"],
@@ -103,7 +104,7 @@ export default {
       } else if (this.item.Thumbnail) {
         return this.item.Thumbnail;
       } else {
-        return require("../assets/landscape_placeholder.jpg");
+        return PlaceholderImage;
       }
     }
   }

@@ -19,13 +19,13 @@
                 {{ $t("f_user_account_info") }}
               </p>
               <v-divider></v-divider>
-              <v-text-field
+              <!--<v-text-field
                 v-bind:label="$t('f_user_idname')"
                 v-model="request.Username"
                 prepend-icon="mdi-account"
                 :rules="[r_required, r_trim, r_idname, r_len(4)]"
                 type="text"
-              ></v-text-field>
+              ></v-text-field>-->
               <v-text-field
                 v-bind:label="$t('f_user_password')"
                 v-model="request.Password"
@@ -108,7 +108,7 @@ export default {
       request: {
         Token: "",
         Name: {},
-        Username: "",
+        Email: "",
         Password: ""
       },
       sending: false,
@@ -125,7 +125,7 @@ export default {
         .post(this.$apiRootURL + "/auth/activate", this.request)
         .then(responseA => {
           var credentials = {
-            username: this.request.Username,
+            username: this.request.Email,
             password: this.request.Password
           };
           this.$http
@@ -151,13 +151,14 @@ export default {
     },
     checkToken(token) {
       this.tokenValid = null;
-      this.request.Token = this.$route.params.token;
       this.$http
         .post(this.$apiRootURL + "/auth/check_token", {
           Token: token
         })
-        .then(() => {
+        .then(response => {
           this.tokenValid = true;
+          this.request.Token = token;
+          this.request.Email = response.data.Email;
         })
         .catch(exception => {
           if (exception.response && exception.response.data.ErrorCode == 214) {

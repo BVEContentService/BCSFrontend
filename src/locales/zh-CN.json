@@ -2,7 +2,7 @@
   "t_lang_name": "中文 (简体)",
   "t_eat_glass": "我能吞下玻璃而不伤身体。",
 
-  "t_app_name": "BVE资源集中索引系统",
+  "t_app_name": "Hmmsim线路库 内容注册系统",
   "t_loading": "载入中...",
   "t_back": "返回",
   "t_refresh": "刷新",
@@ -30,11 +30,11 @@
   "e_url_bad": "URL链接的格式不对。",
   "e_str_trim": "两端不可有空格。",
   "e_str_len": "必须至少 {len} 字长。",
-  "e_relative_path": "相对路径必须以斜杠开头。",
+  "e_relative_path": "相对路径必须以斜杠(/)开头。",
 
 
-  "l_frame_login": "登录",
-  "l_frame_register": "注册",
+  "l_frame_login": "作者登录",
+  "l_frame_register": "作者注册",
   "l_frame_editprofile": "编辑信息",
   "l_frame_logout": "退出",
   "l_frame_home": "主页",
@@ -45,6 +45,7 @@
 
 
   "t_login_title": "登录",
+  "t_login_note_email": "注意：请填电子邮箱！",
   "t_login_username": "用户名",
   "t_login_password": "密码",
   "l_login_btn": "登录",
@@ -56,9 +57,9 @@
   "t_author": "作者",
 
 
-  "f_s3_local": "名称 (本地语言)",
-  "f_s3_english": "名称 (英语)",
-  "f_s3_tag": "名称 (补充)",
+  "f_s3_local": "中文名称 (外国线路/用户也可填外文名称)",
+  "f_s3_english": "英文名称",
+  "f_s3_tag": "Tag标签 (不显示但辅助搜索)",
 
   "e_s3_local_req": "必须填写本地语言名称",
   "e_s3_english_req": "如果本地语言不是英语，必须填写英文名",
@@ -81,16 +82,17 @@
   "f_pack_origin": "原作者信息",
 
   "f_ident_name": "标识名称",
-  "f_ident_guid": "GUID (OpenBVE必填, 否则不需)",
+  "f_ident_guid": "GUID (不需填写)",
   "t_pack_origin_question": "这是原创作品吗？",
   "t_pack_origin_yes": "是的",
   "t_pack_origin_no": "不，这是他人的作品",
   "t_pack_origin_tip": "必须在下方填入原作者相关信息：",
   "f_email": "电子邮件",
   "f_homepage": "主页",
+  "f_force_popup": "强制弹窗",
   "f_pack_homepage_tip": "一个提供关于该包相关信息的网页",
   "f_pack_thumbnail": "预览图",
-  "f_pack_thumbnail_host": "使用'路过图床'上传",
+  "f_pack_thumbnail_host": "使用线路库图床上传",
   "f_thumbnail_url": "全尺寸预览图网址",
   "f_thumbnail_lq_url": "低清晰度预览图网址 (选填)",
 
@@ -110,21 +112,22 @@
   "t_toast_removed": "已移除！",
 
   "t_pack_no_file": "暂不可下载",
+  "t_pack_detail_info": "详细信息",
   "l_file_download": "下载文件",
 
   "f_file_platform": "平台",
   "f_file_version": "版本",
   "f_file_size": "大小",
   "f_file_service": "文件存储服务",
-  "f_file_s_plain": "HTTP 直链下载",
-  "f_file_s_auth": "HTTPS +基本认证",
-  "f_file_s_google": "Google Drive 分享链接",
-  "f_file_s_teracloud": "TeraCloud WebDAV",
-  "f_file_s_onedrive": "OneDrive 分享链接",
-  "f_file_s_pandog": "Pan.Dog WebDAV",
-  "f_file_s_bcstianjin": "BCS 天津公用源",
+  "f_file_s_plain": "HTTP 直链 (勿用)",
+  "f_file_s_auth": "HTTPS +基本认证 (不建议)",
+  "f_file_s_google": "Google Drive 分享链接 (不建议)",
+  "f_file_s_teracloud": "TeraCloud WebDAV (不建议)",
+  "f_file_s_onedrive": "微软 OneDrive",
+  "f_file_s_cloudreve": "Cloudreve系网盘",
+  "f_file_s_bcstianjin": "storage.zbx1425.cn",
   "f_file_p1_url": "直链 URL链接",
-  "f_file_p1_share": "分析链接",
+  "f_file_p1_share": "分享链接",
   "f_file_p1_path": "相对路径",
   "f_file_p2_username": "用户名",
   "f_file_p2_email": "电子邮箱",
@@ -133,7 +136,7 @@
   "f_file_validation": "已验证",
   "t_file_validation_await": "等待验证",
   "t_file_validation_help": "这是啥?",
-  "t_file_validation_warn": "向您提醒，编辑之后，该文件验证状态将暂时取消，要让管理人员再次审核才可回到已验证状态。",
+  "t_file_validation_warn": "向您提醒，编辑之后，该文件将暂时下架。如果要上传新版本，请直接增加版本号更高的新文件，而不是编辑已有文件，以免造成旧版本也暂时无法下载。",
   "l_file_validation_do": "验证",
   "l_file_validation_undo": "取消验证",
   "l_file_show_package": "显示关联封包",
@@ -142,6 +145,7 @@
   "e_size_bad": "文件大小应形如 '72.1 MB'，中间有一个空格，单位可为 B/KB/MB/GB/TB，但必须大写。",
   "e_file_google_bad": "此链接不太像 Google Drive 分享链接。",
   "e_file_onedrive_bad": "此链接不太像 OneDrive 分享链接。",
+  "e_file_cloudreve_bad": "此链接不太像使用 Cloudreve 系统的网盘分享链接。",
 
   "t_file_create": "添加文件",
   "l_file_change": "更新文件",
@@ -153,7 +157,9 @@
   "t_validate_warn": "确认吗？向您提醒，不建议在文件取消验证后24小时内重新验证文件。",
   "t_validate_warn_title": "确认切换文件验证状态",
 
+  "t_filter_plus": "所有可下载", 
   "t_filter_all": "所有",
+  "t_search": "检索",
   "t_filter_empty": "没有资源符合您的搜索条件。",
   "t_user_no_pack": "此用户没有上传过线路包。",
 

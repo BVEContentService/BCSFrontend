@@ -1,12 +1,13 @@
 <template>
   <v-card width="50ch" max-width="100%" class="elevation-12">
-    <v-toolbar color="primary" flat>
-      <v-toolbar-title>{{ $t("t_login_title") }}</v-toolbar-title>
+    <v-toolbar color="primary" flat dark>
+      <v-toolbar-title>{{ $t("l_frame_login") }}</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
       <v-form>
+        <p class="ml-2 mt-4 mb-1">{{ $t("t_login_note_email") }}</p>
         <v-text-field
-          v-bind:label="$t('t_login_username')"
+          v-bind:label="$t('f_user_email')"
           name="login"
           v-model="username"
           prepend-icon="mdi-account"
@@ -72,12 +73,12 @@ export default {
                 this.$dialog.message.warning(
                   this.$i18n.t("t_toast_login_resubmit"),
                   {
-                    position: "top-right"
+                    position: "bottom-left"
                   }
                 );
               } else {
                 this.$dialog.message.success(this.$i18n.t("t_toast_login"), {
-                  position: "top-right"
+                  position: "bottom-left"
                 });
                 EventBus.$emit("reloadSidebar");
               }

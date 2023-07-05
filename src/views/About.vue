@@ -1,26 +1,32 @@
 <template>
-  <v-container class="home-container">
-    <v-row class="text-center">
-      <v-col cols="12" class="construction">
-        <div class="">
-          <h1>Under Construction!</h1>
-        </div>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12">
-        <h1>This is an about page</h1>
-        <h2>BCSFrontend {{ version }}</h2>
-      </v-col>
-    </v-row>
-  </v-container>
+  <narrow-container>
+    <iframe :src="documentURL('about?do=export_xhtml&version=' + version)" />
+  </narrow-container>
 </template>
 
+<style scoped>
+iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+</style>
+
 <script>
+import { getExternalDocUrl } from "../utils/DocHelper.js";
 export default {
   computed: {
     version() {
-      return process.env.VUE_APP_VERSION;
+      return (
+        process.env.VUE_APP_VERSION +
+        " @ " +
+        document.documentElement.dataset.buildTimestampUtc.substring(0, 10)
+      );
+    }
+  },
+  methods: {
+    documentURL(topic) {
+      return getExternalDocUrl(this, topic);
     }
   }
 };

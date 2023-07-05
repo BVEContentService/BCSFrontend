@@ -6,6 +6,9 @@ deploy
 .env.local
 .env.*.local
 
+# build results
+dist/
+
 # Log files
 npm-debug.log*
 yarn-debug.log*

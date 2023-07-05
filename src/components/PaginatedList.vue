@@ -1,11 +1,11 @@
 <template>
   <v-container>
     <v-row v-if="totalLength > 0" dense class="mb-3">
-      <v-btn-toggle rounded v-model="itemsPerPage" mandatory>
+      <!--<v-btn-toggle rounded v-model="itemsPerPage" mandatory>
         <v-btn :value="5" :disabled="disabled">5</v-btn>
         <v-btn :value="10" :disabled="disabled">10</v-btn>
         <v-btn :value="20" :disabled="disabled">20</v-btn>
-      </v-btn-toggle>
+      </v-btn-toggle>-->
       <v-pagination
         v-model="page"
         :length="pagerLength"
@@ -33,11 +33,11 @@
       </template>
     </v-row>
     <v-row v-if="totalLength > 0" dense class="mt-3">
-      <v-btn-toggle rounded v-model="itemsPerPage" mandatory>
+      <!--<v-btn-toggle rounded v-model="itemsPerPage" mandatory>
         <v-btn :value="5" :disabled="disabled">5</v-btn>
         <v-btn :value="10" :disabled="disabled">10</v-btn>
         <v-btn :value="20" :disabled="disabled">20</v-btn>
-      </v-btn-toggle>
+      </v-btn-toggle>-->
       <v-pagination
         v-model="page"
         :length="pagerLength"
@@ -58,7 +58,7 @@ export default {
     }
   },
   data: () => ({
-    itemsPerPage: 10,
+    itemsPerPage: 20,
     page: 1
   }),
   watch: {

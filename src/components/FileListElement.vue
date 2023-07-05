@@ -1,5 +1,18 @@
 <template>
   <v-form v-model="formValid" ref="editForm">
+    <div
+      v-if="
+        file.ID >= 1 &&
+          !!file.RejectReason
+      "
+    >
+      <v-row>
+        <v-col cols="12" class="mt-2 mb-2" style="background: #fcc">
+          <v-icon class="mr-1" color="red">mdi-alert-circle</v-icon>
+          退回原因：<b style="color:red">{{ file.RejectReason }}</b>
+        </v-col>
+      </v-row>
+    </div>
     <v-row v-if="!!file.Service">
       <v-col cols="12" sm="6" class="pb-0">
         <v-select
@@ -60,6 +73,16 @@
         ></v-text-field>
       </v-col>
     </v-row>
+    <div v-if="file.ID >= 1 && $store.state.profile.Privilege >= 10">
+      <v-row>
+        <v-col cols="12" sm="6" class="pb-0">
+          <v-text-field
+            v-model="file.RejectReason"
+            label="打回原因 (需打回时填写并按更新封包)"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+    </div>
     <v-row>
       <v-col cols="12">
         <div class="mt-3">
@@ -230,7 +253,7 @@ export default {
             this.createCallback(response.data);
             this.updateFieldFromModel(response.data);
             this.$dialog.message.success(this.$i18n.t("t_toast_created"), {
-              position: "top-right"
+              position: "bottom-left"
             });
           })
           .catch(exception => {
@@ -243,7 +266,7 @@ export default {
             this.updateCallback(response.data);
             this.updateFieldFromModel(response.data);
             this.$dialog.message.success(this.$i18n.t("t_toast_saved"), {
-              position: "top-right"
+              position: "bottom-left"
             });
           })
           .catch(exception => {
@@ -267,7 +290,7 @@ export default {
                   this.$dialog.message.warning(
                     this.$i18n.t("t_toast_removed"),
                     {
-                      position: "top-right"
+                      position: "bottom-left"
                     }
                   );
                 })
@@ -295,7 +318,7 @@ export default {
                   this.updateCallback(response.data);
                   this.updateFieldFromModel(response.data);
                   this.$dialog.message.success(this.$i18n.t("t_toast_saved"), {
-                    position: "top-right"
+                    position: "bottom-left"
                   });
                 })
                 .catch(exception => {

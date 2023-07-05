@@ -1,18 +1,15 @@
 <template>
   <narrow-container>
-    <div class="d-flex flex-wrap flex-container">
+    <div>
       <div class="col1">
-        <div style="position: relative">
+        <!--<div style="position: relative">
           <img class="profile-img" :src="gravatarURL" style="max-width:240px" />
-          <edit-fab v-if="canEdit" :to="editURL"></edit-fab>
         </div>
-        <h1 class="mb-4 mt-2" style="word-break: break-all">
-          {{ displayName }}
-        </h1>
         <p class="mb-1">
           <v-icon class="pr-2 d-table-cell">mdi-account</v-icon>
           <em class="d-table-cell">{{ profile.Username }}</em>
-        </p>
+        </p>-->
+        <h1 class="mt-4 mb-4">{{ displayName }}</h1>
         <p v-if="profile.Email" class="mb-1">
           <v-icon class="pr-2 d-table-cell">mdi-email</v-icon>
           <a class="d-table-cell" :href="'mailto:' + profile.Email">{{
@@ -27,34 +24,46 @@
         </p>
       </div>
       <div class="col2">
-        <div class="mt-4" v-html="profile.Description"></div>
-        <v-divider class="mt-5 mb-3"></v-divider>
-        <paginated-list
-          tag="package-list-element"
-          :items="profile.Packages"
-          :totalLength="profile.Packages.length"
-          :switchCallback="updatePackagePager"
-        >
-          <template v-slot:empty>
-            <v-icon large class="mr-4 ml-3">mdi-flask-empty-outline</v-icon>
-            <span>{{ $t("t_user_no_pack") }}</span>
-          </template>
-        </paginated-list>
+        <div class="mt-2 col2-element" v-html="profile.Description"></div>
       </div>
     </div>
+    <v-divider class="mt-5 mb-3"></v-divider>
+    <paginated-list
+      tag="package-list-element"
+      :items="profile.Packages"
+      :totalLength="-1"
+      :switchCallback="updatePackagePager"
+      class="col2-element"
+    >
+      <template v-slot:empty>
+        <v-icon large class="mr-4 ml-3">mdi-flask-empty-outline</v-icon>
+        <span>{{ $t("t_user_no_pack") }}</span>
+      </template>
+    </paginated-list>
   </narrow-container>
 </template>
 
 <style scoped>
 .col1 {
   width: 260px;
+  display: table-cell;
 }
 .col1 p {
   word-break: break-all;
 }
 .col2 {
-  flex-grow: 1;
-  min-width: 500px;
+  vertical-align: top;
+  display: table-cell;
+  padding: 0 0.5em;
+}
+@media screen and (max-width: 700px) {
+  .col1 {
+    display: block;
+  }
+  .col2 {
+    padding: 0;
+    display: block;
+  }
 }
 h1 {
   line-height: 1em;
@@ -71,7 +80,7 @@ h1 {
 
 <script>
 import { handleNetworkErr } from "../utils/ErrorHelper.js";
-import { EventBus } from "../utils/EventBus.js";
+// import { EventBus } from "../utils/EventBus.js";
 import { s3 } from "../utils/String3Helper";
 export default {
   pageTitle: "My Profile",
@@ -80,7 +89,7 @@ export default {
     return {
       profile: {
         Email: "",
-        Username: t_loading,
+        //Username: t_loading,
         Description: t_loading,
         Homepage: "",
         Name: {
@@ -132,7 +141,7 @@ export default {
   },
   methods: {
     fetchProfile(paramID) {
-      EventBus.$emit("setOverlay", "loading");
+      // EventBus.$emit("setOverlay", "loading");
       var uid;
       if (paramID && paramID == parseInt(paramID, 10)) {
         uid = paramID;
@@ -148,7 +157,7 @@ export default {
           this.profile = response.data;
           // Let the view model attach somewhere
           if (!this.profile.Packages) this.profile.Packages = [];
-          EventBus.$emit("setOverlay", "");
+          // EventBus.$emit("setOverlay", "");
         })
         .catch(exception => {
           handleNetworkErr(exception, this, "overlay");

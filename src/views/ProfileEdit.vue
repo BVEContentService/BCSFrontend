@@ -28,7 +28,7 @@
               </v-row>
             </v-card-text>
           </v-card>
-          <v-card class="mt-4">
+          <!--<v-card class="mt-4">
             <v-card-title class="pb-0">{{ $t("f_user_avatar") }}</v-card-title>
             <v-card-text>
               <p v-html="this.$i18n.t('f_user_avatar_tip')"></p>
@@ -47,7 +47,7 @@
                 {{ $t("f_user_avatar_gravatar") }}
               </v-btn>
             </v-card-text>
-          </v-card>
+          </v-card>-->
           <v-card class="mt-4">
             <v-card-title class="pb-0">{{
               $t("f_user_password")
@@ -98,7 +98,7 @@
 
 <script>
 import { handleNetworkErr } from "../utils/ErrorHelper.js";
-import { EventBus } from "../utils/EventBus.js";
+// import { EventBus } from "../utils/EventBus.js";
 function isURL(str) {
   var url = new RegExp(
     "^(https?:\\/\\/)?" + // protocol
@@ -141,7 +141,7 @@ export default {
             );
           }
           this.$dialog.message.success(this.$i18n.t("t_toast_saved"), {
-            position: "top-right"
+            position: "bottom-left"
           });
         })
         .catch(exception => {
@@ -149,14 +149,14 @@ export default {
         });
     },
     submitDescription() {
-      var payload = { Description: this.pack.Description };
+      var payload = { Description: this.profile.Description };
       this.$http
         .post(this.$apiRootURL + "/uploaders/" + this.profile.ID, payload)
         .then(response => {
           this.profile = response.data;
           this.ensureModelBind();
           this.$dialog.message.success(this.$i18n.t("t_toast_saved"), {
-            position: "top-right"
+            position: "bottom-left"
           });
         })
         .catch(exception => {
@@ -164,7 +164,7 @@ export default {
         });
     },
     fetchProfile(paramID) {
-      EventBus.$emit("setOverlay", "loading");
+      // EventBus.$emit("setOverlay", "loading");
       var uid;
       if (this.$store.state.profile) {
         if (paramID && paramID == parseInt(paramID, 10)) {
@@ -187,7 +187,7 @@ export default {
         .get(this.$apiRootURL + "/uploaders/" + uid)
         .then(response => {
           this.profile = response.data;
-          EventBus.$emit("setOverlay", "");
+          // EventBus.$emit("setOverlay", "");
         })
         .catch(exception => {
           handleNetworkErr(exception, this, "overlay");

@@ -80,11 +80,26 @@
       </narrow-container>
     </div>
     <narrow-container>
-      <v-row class="pl-4 pr-4 mt-2">
-        <v-expansion-panels dark>
+      <v-row class="pl-4 pr-4 mt-2 mb-3">
+        <div v-for="(item, i) in pkg.Files" :key="i">
+          <v-btn
+            large
+            :color="platformMap[item.Platform].bgColor"
+            :dark="platformMap[item.Platform].dark"
+            :href="getFetchUrl(pkg, item)"
+            target="_blank"
+            class="mr-4"
+          >
+            <v-icon class="mr-3">mdi-download</v-icon>
+            v{{ item.Version }} for {{ item.Platform }} ({{ item.Size }})
+          </v-btn>
+        </div>
+      </v-row>
+      <v-row class="pl-4 pr-4 mt-4 mb-4">
+        <v-expansion-panels accordion>
           <v-expansion-panel>
-            <v-expansion-panel-header class="construction pb-1 pt-1"
-              ><h2>Detail Info Display (Under Construction)</h2>
+            <v-expansion-panel-header class="pb-1 pt-1">
+              <h2>{{ $t("t_pack_detail_info") }}</h2>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <div v-html="obj2table(pkg)"></div>
@@ -92,10 +107,22 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </v-row>
-      <v-row class="pl-4 pr-4 mt-4"><div v-html="pkg.Description"></div></v-row>
+      <v-divider class="mt-5 mb-3"></v-divider>
+      <v-row class="pl-4 pr-4 mt-4">
+        <div class="userDescription" v-html="pkg.Description"></div>
+      </v-row>
     </narrow-container>
   </div>
 </template>
+
+<style>
+.userDescription img {
+  max-width: 80%;
+  max-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+</style>
 
 <style scoped>
 a {
@@ -117,12 +144,16 @@ a {
 </style>
 
 <script>
+import mapping from "../config/mapping.js";
 import { s3 } from "../utils/String3Helper";
-import { handleNetworkErr } from "../utils/ErrorHelper.js";
-import { EventBus } from "../utils/EventBus.js";
+import { handleNetworkErr } from "../utils/ErrorHelper";
+import { PlaceholderImage } from "../utils/DocHelper";
+// import { EventBus } from "../utils/EventBus.js";
+let Base64 = require("js-base64").Base64;
 export default {
   data: () => ({
-    pkg: { Name: {}, Uploader: { Name: {} } }
+    pkg: { Name: {}, Uploader: { Name: {} }, Files: [] },
+    platformMap: mapping.platform
   }),
   computed: {
     s3() {
@@ -132,7 +163,7 @@ export default {
       if (this.pkg.Thumbnail) {
         return this.pkg.Thumbnail;
       } else {
-        return require("../assets/landscape_placeholder.jpg");
+        return PlaceholderImage;
       }
     },
     isEditable() {
@@ -148,7 +179,7 @@ export default {
   },
   methods: {
     fetchpkg(paramID) {
-      EventBus.$emit("setOverlay", "loading");
+      // EventBus.$emit("setOverlay", "loading");
       var pkgid;
       if (paramID && paramID == parseInt(paramID, 10)) {
         pkgid = paramID;
@@ -160,7 +191,7 @@ export default {
         .get(this.$apiRootURL + "/packages/" + pkgid)
         .then(responseB => {
           this.pkg = responseB.data;
-          EventBus.$emit("setOverlay", "");
+          // EventBus.$emit("setOverlay", "");
         })
         .catch(exception => {
           handleNetworkErr(exception, this, "overlay");
@@ -172,7 +203,12 @@ export default {
       }
       var result = "<table class='obj2table' cellspacing='0'>";
       Object.entries(obj).forEach(key => {
-        if (key[0] != "Description" && key[1] != null && key[1] != "") {
+        if (
+          key[0] != "Description" &&
+          key[0] != "Files" &&
+          key[1] != null &&
+          key[1] != ""
+        ) {
           result += "<tr><td>" + key[0] + "</td><td>";
           if (key[1] instanceof Object) {
             result += this.obj2table(key[1]);
@@ -197,6 +233,19 @@ export default {
       });
       result += "</table>";
       return result;
+    },
+    getFetchUrl(pack, file) {
+      if (file.Platform == "hmmsim") {
+        var tparam = Base64.encode("hm" + pack.ID);
+        return (
+          "https://api.zbx1425.cn/install/?t=" +
+          tparam +
+          "&l=" +
+          this.$store.state.lang
+        );
+      } else {
+        return file.FetchURL;
+      }
     }
   },
   mounted() {

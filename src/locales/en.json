@@ -2,7 +2,7 @@
   "t_lang_name": "English",
   "t_eat_glass": "I can eat glass and it doesn't hurt me.",
 
-  "t_app_name": "BVE Content Service",
+  "t_app_name": "HmmsimRoutes Package Registry",
   "t_loading": "Loading...",
   "t_back": "Back",
   "t_refresh": "Refresh",
@@ -30,11 +30,11 @@
   "e_url_bad": "This URL is not in a valid format.",
   "e_str_trim": "Space must not be present on either ends.",
   "e_str_len": "Must be at least {len} characters long.",
-  "e_relative_path": "Relative path must begin with a leading slash.",
+  "e_relative_path": "Relative path must begin with a leading slash(/).",
 
 
-  "l_frame_login": "Login",
-  "l_frame_register": "Register",
+  "l_frame_login": "Developer Login",
+  "l_frame_register": "Developer Register",
   "l_frame_editprofile": "Edit Profile",
   "l_frame_logout": "Logout",
   "l_frame_home": "Home",
@@ -45,6 +45,7 @@
 
 
   "t_login_title": "Login",
+  "t_login_note_email": "Note: Use Email!",
   "t_login_username": "Username",
   "t_login_password": "Password",
   "l_login_btn": "Login",
@@ -58,7 +59,7 @@
 
   "f_s3_local": "Name (Local Language)",
   "f_s3_english": "Name (English)",
-  "f_s3_tag": "Name (Complementary)",
+  "f_s3_tag": "Tag (Assists Searching)",
 
   "e_s3_local_req": "Local Language Name is required",
   "e_s3_english_req": "English Name is requied if local language is not English",
@@ -88,9 +89,10 @@
   "t_pack_origin_tip": "The name and contact of the original author must be addressed below.",
   "f_email": "Email",
   "f_homepage": "Homepage",
+  "f_force_popup": "Force Popup",
   "f_pack_homepage_tip": "A web page providing dedicated information of the package.",
   "f_pack_thumbnail": "Thumbnail Image",
-  "f_pack_thumbnail_host": "Upload via imgchr.com",
+  "f_pack_thumbnail_host": "Upload via HmmsimRoutes Image",
   "f_thumbnail_url": "Full Resolution Thumbnail Image URL",
   "f_thumbnail_lq_url": "Lower Quality Thumbnail Image URL (Optional)",
 
@@ -110,19 +112,20 @@
   "t_toast_removed": "Removed!",
 
   "t_pack_no_file": "Download not available",
+  "t_pack_detail_info": "Detail Info",
   "l_file_download": "Download",
 
   "f_file_platform": "Platform",
   "f_file_version": "Version",
   "f_file_size": "Size",
   "f_file_service": "File Storage Service",
-  "f_file_s_plain": "HTTP Direct Link Download",
-  "f_file_s_auth": "HTTPS with Basic Auth",
-  "f_file_s_google": "Google Drive Share",
-  "f_file_s_teracloud": "TeraCloud WebDAV",
-  "f_file_s_onedrive": "OneDrive Share",
-  "f_file_s_pandog": "Pan.Dog WebDAV",
-  "f_file_s_bcstianjin": "BCS Tianjin Public Source",
+  "f_file_s_plain": "HTTP Direct Link (Don't use unless you really know what it is)",
+  "f_file_s_auth": "HTTPS with Basic Auth (Not Recommended)",
+  "f_file_s_google": "Google Drive Share (Not Recommended)",
+  "f_file_s_teracloud": "TeraCloud WebDAV (Not Recommended)",
+  "f_file_s_onedrive": "Microsoft OneDrive",
+  "f_file_s_cloudreve": "Cloudreve-based",
+  "f_file_s_bcstianjin": "storage.zbx1425.cn",
   "f_file_p1_url": "Direct URL",
   "f_file_p1_share": "Share Link",
   "f_file_p1_path": "Relative Path",
@@ -142,6 +145,7 @@
   "e_size_bad": "Size should be like '72.1 MB', with a single space in between, and the unit can be B/KB/MB/GB/TB uppercase.",
   "e_file_google_bad": "This does not seem to be a Google Drive share link.",
   "e_file_onedrive_bad": "This does not seem to be a OneDrive share link.",
+  "e_file_cloudreve_bad": "This does not seem to be a Cloudreve-compatible share link.",
 
   "t_file_create": "Add a File",
   "l_file_change": "Update File",
@@ -153,7 +157,9 @@
   "t_validate_warn": "Are you sure? For your information, It is not recommended to revalidated a file within 24 hours after its invalidation.",
   "t_validate_warn_title": "Confirm Toogle Validation",
 
+  "t_filter_plus": "All downloadable", 
   "t_filter_all": "All",
+  "t_search": "Search",
   "t_filter_empty": "No resource matches this criteria.",
   "t_user_no_pack": "This user did not upload any package.",
 

@@ -5,7 +5,7 @@
         <v-card class="elevation-4">
           <v-toolbar color="primary" dark flat dense>
             <v-toolbar-title>
-              {{ sent ? $t("t_user_email_sent") : $t("t_user_register") }}
+              {{ sent ? $t("t_user_email_sent") : $t("l_frame_register") }}
             </v-toolbar-title>
             <v-spacer></v-spacer>
           </v-toolbar>

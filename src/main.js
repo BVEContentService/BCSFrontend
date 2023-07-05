@@ -10,6 +10,8 @@ import camelCase from "lodash/camelCase";
 import VuetifyDialog from "vuetify-dialog";
 import "vuetify-dialog/dist/vuetify-dialog.css";
 import { EventBus } from "./utils/EventBus";
+import * as Sentry from "@sentry/browser";
+import { Integrations } from "@sentry/tracing";
 
 Vue.config.productionTip = false;
 
@@ -31,6 +33,19 @@ requireComponent.keys().forEach(fileName => {
   Vue.component(componentName, componentConfig.default || componentConfig);
 });
 
+Sentry.init({
+  Vue,
+  dsn:
+    "https://fcea37a32c8549f7a83f8e5086a02d21@o488451.ingest.sentry.io/5554523",
+  autoSessionTracking: true,
+  integrations: [new Integrations.BrowserTracing()],
+
+  // We recommend adjusting this value in production, or using tracesSampler
+  // for finer control
+  tracesSampleRate: 1.0,
+  logErrors: true
+});
+
 Vue.use(VuetifyDialog, {
   context: { vuetify },
   error: { icon: "mdi-alert-circle" },
@@ -40,20 +55,38 @@ Vue.use(VuetifyDialog, {
 
 axios.interceptors.request.use(
   config => {
+    EventBus.$emit("setNetworkOverlay", true);
     if (localStorage.JWT_TOKEN) {
-      config.headers.Authorization = `Bearer ${localStorage.JWT_TOKEN}`;
+      if (config.headers.Authorization === "NONE") {
+        delete config.headers["Authorization"];
+      } else {
+        config.headers.Authorization = `Bearer ${localStorage.JWT_TOKEN}`;
+      }
     }
     return config;
   },
   err => {
+    EventBus.$emit("setNetworkOverlay", false);
+    return Promise.reject(err);
+  }
+);
+
+axios.interceptors.response.use(
+  res => {
+    EventBus.$emit("setNetworkOverlay", false);
+    return res;
+  },
+  err => {
+    EventBus.$emit("setNetworkOverlay", false);
     return Promise.reject(err);
   }
 );
 
 Vue.prototype.$http = axios;
 Vue.prototype.$apiRootURL = process.env.VUE_APP_API_ROOT_URL;
+Vue.prototype.$docRootURL = process.env.VUE_APP_DOC_ROOT_URL;
 
-var vm = new Vue({
+new Vue({
   router,
   vuetify,
   i18n,
@@ -77,6 +110,6 @@ console.log(
   "If you don't understand what exactly you are doing here, you should close this window without doing anything."
 );
 
-window.onerror = function(error, url, line) {
+/*window.onerror = function(error, url, line) {
   vm.$store.commit("onError", { error: error, url: url, line: line });
-};
+};*/

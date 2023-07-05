@@ -1,7 +1,7 @@
 process.env.VUE_APP_VERSION = require("./package.json").version;
 
 module.exports = {
-  publicPath: "/",
+  publicPath: "",
 
   transpileDependencies: ["vuetify"],
 
@@ -22,7 +22,7 @@ module.exports = {
 
   chainWebpack: config => {
     config.plugin("html").tap(args => {
-      args[0].title = "BVE Content Service";
+      args[0].title = "HmmsimRoutes Package Registry";
       return args;
     });
   },

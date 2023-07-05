@@ -1,6 +1,7 @@
 <template>
   <narrow-container>
     <v-tabs>
+      <edit-fab :to="detailURL" icon="mdi-eye" v-if="packID >= 1"></edit-fab>
       <v-tab href="#tab-1">{{ $t("t_category_info") }}</v-tab>
       <v-tab href="#tab-2" v-if="packID >= 1">{{
         $t("t_category_description")
@@ -12,7 +13,9 @@
         <v-form v-model="formValid" ref="editForm">
           <p class="mt-4 mb-0">
             <v-icon class="mr-2">mdi-information</v-icon>
-            {{ $t("f_pack_tip_manual") }}
+            <a :href="documentURL('packfields')" target="_blank">
+              {{ $t("f_pack_tip_manual") }}
+            </a>
           </p>
           <p>
             <v-icon class="mr-2">mdi-information</v-icon>
@@ -116,6 +119,12 @@
                     :rules="[r_url]"
                   ></v-text-field>
                 </v-col>
+                <v-col cols="12" sm="6" class="pb-0 pt-0">
+                  <v-checkbox
+                    v-model="pack.ForcePopup"
+                    :label="this.$i18n.t('f_force_popup')"
+                  ></v-checkbox>
+                </v-col>
               </v-row>
             </v-card-text>
           </v-card>
@@ -183,6 +192,12 @@
         </v-btn>
       </v-tab-item>
       <v-tab-item value="tab-3" class="pt-4">
+        <p class="mt-0 mb-4">
+          <v-icon class="mr-2">mdi-information</v-icon>
+          <a :href="documentURL('filefields')" target="_blank">
+            {{ $t("f_pack_tip_manual") }}
+          </a>
+        </p>
         <file-list v-model="pack.Files" :newFilePackageID="pack.ID"></file-list>
       </v-tab-item>
     </v-tabs>
@@ -192,7 +207,8 @@
 <script>
 import { uploadImage } from "../utils/ImgChr.js";
 import { handleNetworkErr } from "../utils/ErrorHelper.js";
-import { EventBus } from "../utils/EventBus.js";
+import { getExternalDocUrl } from "../utils/DocHelper.js";
+// import { EventBus } from "../utils/EventBus.js";
 function isURL(str) {
   var url = new RegExp(
     "^(https?:\\/\\/)?" + // protocol
@@ -210,6 +226,7 @@ var packNameRegex = /^[a-zA-Z0-9- ]*$/;
 var englishRegex = /^[\s\w\d\x21-\x2f\x3a-\x40\x5b-\x60\x7b-\x7e]*$/;
 export default {
   data: () => ({
+    networkBusy: false,
     packID: 0,
     formValid: false,
     isRepost: false,
@@ -221,6 +238,9 @@ export default {
         this.packID < 1 ||
         (this.$store.state.profile && this.$store.state.profile.Privilege >= 50)
       );
+    },
+    detailURL() {
+      return "/package/detail/" + this.packID;
     }
   },
   methods: {
@@ -235,7 +255,7 @@ export default {
         String(this.pack.Author.Name.Local).match(englishRegex)
       )
         this.pack.Author.Name.English = "";
-      if (!this.isRepost) this.pack.Author = null;
+      if (!this.isRepost) delete this.pack.Author;
       // Shrink request size by removing unnecessery fields
       delete this.pack.Description;
       delete this.pack.Uploader;
@@ -248,12 +268,13 @@ export default {
             this.$dialog.message.success(
               this.$i18n.t("t_toast_created_then_edit"),
               {
-                position: "top-right"
+                position: "bottom-left"
               }
             );
           })
           .catch(exception => {
             handleNetworkErr(exception, this);
+            this.ensureModelBind();
           });
       } else {
         this.$http
@@ -265,11 +286,12 @@ export default {
             this.pack = response.data;
             this.ensureModelBind();
             this.$dialog.message.success(this.$i18n.t("t_toast_saved"), {
-              position: "top-right"
+              position: "bottom-left"
             });
           })
           .catch(exception => {
             handleNetworkErr(exception, this);
+            this.ensureModelBind();
           });
       }
     },
@@ -282,7 +304,7 @@ export default {
             this.pack = response.data;
             this.ensureModelBind();
             this.$dialog.message.success(this.$i18n.t("t_toast_saved"), {
-              position: "top-right"
+              position: "bottom-left"
             });
           })
           .catch(exception => {
@@ -306,7 +328,7 @@ export default {
                   this.$dialog.message.warning(
                     this.$i18n.t("t_toast_removed"),
                     {
-                      position: "top-right"
+                      position: "bottom-left"
                     }
                   );
                 })
@@ -323,14 +345,14 @@ export default {
       fileSelector.onchange = e => {
         var file = e.target.files[0];
         this.$dialog.message.warning(this.$i18n.t("t_toast_uploading"), {
-          position: "top-right"
+          position: "bottom-left"
         });
         uploadImage(this, file)
           .then(result => {
             this.pack.Thumbnail = result.full_url;
             this.pack.ThumbnailLQ = result.thumb_url;
             this.$dialog.message.success(this.$i18n.t("t_toast_done"), {
-              position: "top-right"
+              position: "bottom-left"
             });
           })
           .catch(ex => {
@@ -340,16 +362,32 @@ export default {
       fileSelector.click();
     },
     fetchPackage(paramID) {
-      if (paramID && paramID == parseInt(paramID, 10)) {
-        EventBus.$emit("setOverlay", "loading");
+      if (
+        paramID &&
+        paramID == parseInt(paramID, 10) &&
+        parseInt(paramID, 10) != 0
+      ) {
+        // EventBus.$emit("setOverlay", "loading");
         this.$http
           .get(this.$apiRootURL + "/packages/" + paramID)
           .then(response => {
             this.pack = response.data;
             this.packID = response.data.ID;
             this.isRepost = !!response.data.Author;
-            this.ensureModelBind();
-            EventBus.$emit("setOverlay", "");
+            var isEditable =
+              this.$store.state.profile &&
+              (this.$store.state.profile.Privilege >= 50 ||
+                this.$store.state.profile.ID == this.pack.UploaderID);
+            if (!isEditable) {
+              this.pack = null;
+              this.packID = 0;
+              this.isRepost = false;
+              this.ensureModelBind();
+              this.$router.push("/");
+            } else {
+              this.ensureModelBind();
+              // EventBus.$emit("setOverlay", "");
+            }
           })
           .catch(exception => {
             handleNetworkErr(exception, this, "overlay");
@@ -359,6 +397,11 @@ export default {
         this.packID = 0;
         this.isRepost = false;
         this.ensureModelBind();
+        var isEditable =
+          this.$store.state.profile && this.$store.state.profile.Privilege >= 0;
+        if (!isEditable) {
+          this.$router.push("/");
+        }
       }
     },
     ensureModelBind() {
@@ -402,6 +445,9 @@ export default {
           .match(/^[0-9a-f]{32}$/) ||
         this.$i18n.t("e_pack_guid")
       );
+    },
+    documentURL(topic) {
+      return getExternalDocUrl(this, topic);
     }
   },
   mounted() {

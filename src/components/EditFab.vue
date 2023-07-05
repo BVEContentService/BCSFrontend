@@ -1,6 +1,6 @@
 <template>
   <v-btn rounded color="primary" class="editFab" :disabled="disabled" :to="to">
-    <v-icon>mdi-pencil</v-icon>
+    <v-icon>{{ icon ? icon : "mdi-pencil" }}</v-icon>
   </v-btn>
 </template>
 
@@ -16,6 +16,6 @@
 <script>
 export default {
   name: "edit-fab",
-  props: ["disabled", "to"]
+  props: ["disabled", "to", "icon"]
 };
 </script>
