@@ -57,9 +57,7 @@ axios.interceptors.request.use(
   config => {
     EventBus.$emit("setNetworkOverlay", true);
     if (localStorage.JWT_TOKEN) {
-      if (config.headers.Authorization === "NONE") {
-        delete config.headers["Authorization"];
-      } else {
+      if (!config.headers.Authorization) {
         config.headers.Authorization = `Bearer ${localStorage.JWT_TOKEN}`;
       }
     }
@@ -85,6 +83,8 @@ axios.interceptors.response.use(
 Vue.prototype.$http = axios;
 Vue.prototype.$apiRootURL = process.env.VUE_APP_API_ROOT_URL;
 Vue.prototype.$docRootURL = process.env.VUE_APP_DOC_ROOT_URL;
+Vue.prototype.$lskyApiURL = process.env.VUE_APP_LSKY_API_URL;
+Vue.prototype.$lskyApiToken = process.env.VUE_APP_LSKY_API_TOKEN;
 
 new Vue({
   router,

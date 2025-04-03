@@ -1,14 +1,13 @@
 export async function uploadImage(vm, file) {
-  const imgChrBaseURL = "https://storage.zbx1425.cn/img-lsky/api/v1/upload";
   let formData = new FormData();
   formData.append("file", file);
   formData.append("strategy_id", "1");
   let jsonResponse = await vm.$http({
     method: "post",
-    url: imgChrBaseURL,
+    url: vm.$lskyApiURL,
     data: formData,
     headers: {
-      Authorization: "NONE"
+      Authorization: "Bearer " + vm.$lskyApiToken
     }
   });
   if (jsonResponse.data.status) {
